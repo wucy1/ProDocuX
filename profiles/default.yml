@@ -1,0 +1,20 @@
+description: 通用文檔提取Profile
+extraction_rules:
+  basic_info:
+    patterns:
+    - 標題[:：]\s*(.+)
+    - title[:：]\s*(.+)
+    - 名稱[:：]\s*(.+)
+  content:
+    patterns:
+    - 內容[:：]\s*(.+)
+    - content[:：]\s*(.+)
+    - 摘要[:：]\s*(.+)
+max_pages: 10
+name: default
+post_process:
+  clean_text: true
+  normalize_format: true
+  validate_data: true
+use_page_extraction: true
+version: 1.0.0

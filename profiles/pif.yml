@@ -1,0 +1,118 @@
+name: "PIF文檔"
+description: "化妝品產品資訊檔案提取Profile"
+version: "1.0.0"
+
+# 基本設定
+use_page_extraction: true
+max_pages: 10  # 減少到10頁以控制成本
+confidence_threshold: 0.7
+
+# 提取規則
+extraction_rules:
+  basic_info:
+    patterns:
+      - "產品名稱[:：]\\s*(.+)"
+      - "Product Name[:：]\\s*(.+)"
+      - "產品類別[:：]\\s*(.+)"
+      - "Product Category[:：]\\s*(.+)"
+      - "產品劑型[:：]\\s*(.+)"
+      - "Product Form[:：]\\s*(.+)"
+      - "用途[:：]\\s*(.+)"
+      - "Intended Use[:：]\\s*(.+)"
+  
+  manufacturer_info:
+    patterns:
+      - "製造業者[:：]\\s*(.+)"
+      - "Manufacturer[:：]\\s*(.+)"
+      - "製造業者地址[:：]\\s*(.+)"
+      - "Manufacturer Address[:：]\\s*(.+)"
+      - "製造業者電話[:：]\\s*(.+)"
+      - "Manufacturer Phone[:：]\\s*(.+)"
+      - "輸入業者[:：]\\s*(.+)"
+      - "Importer[:：]\\s*(.+)"
+      - "輸入業者地址[:：]\\s*(.+)"
+      - "Importer Address[:：]\\s*(.+)"
+      - "輸入業者電話[:：]\\s*(.+)"
+      - "Importer Phone[:：]\\s*(.+)"
+  
+  ingredients:
+    patterns:
+      - "全成分名稱及其各別含量[:：]\\s*(.+)"
+      - "Full Ingredient List[:：]\\s*(.+)"
+      - "成分表[:：]\\s*(.+)"
+      - "Ingredients[:：]\\s*(.+)"
+      - "INCI名稱[:：]\\s*(.+)"
+      - "INCI Name[:：]\\s*(.+)"
+      - "CAS號碼[:：]\\s*(.+)"
+      - "CAS Number[:：]\\s*(.+)"
+      - "含量[:：]\\s*(.+)"
+      - "Content[:：]\\s*(.+)"
+      - "功能[:：]\\s*(.+)"
+      - "Function[:：]\\s*(.+)"
+  
+  usage_instructions:
+    patterns:
+      - "使用方法[:：]\\s*(.+)"
+      - "Usage Instructions[:：]\\s*(.+)"
+      - "使用部位[:：]\\s*(.+)"
+      - "Application Area[:：]\\s*(.+)"
+      - "使用量[:：]\\s*(.+)"
+      - "Dosage[:：]\\s*(.+)"
+      - "使用頻率[:：]\\s*(.+)"
+      - "Frequency[:：]\\s*(.+)"
+      - "適用對象[:：]\\s*(.+)"
+      - "Target Users[:：]\\s*(.+)"
+      - "注意事項[:：]\\s*(.+)"
+      - "Precautions[:：]\\s*(.+)"
+  
+  safety_info:
+    patterns:
+      - "安全評估[:：]\\s*(.+)"
+      - "Safety Assessment[:：]\\s*(.+)"
+      - "毒理學資料[:：]\\s*(.+)"
+      - "Toxicological Data[:：]\\s*(.+)"
+      - "過敏原[:：]\\s*(.+)"
+      - "Allergens[:：]\\s*(.+)"
+      - "禁忌症[:：]\\s*(.+)"
+      - "Contraindications[:：]\\s*(.+)"
+
+# 頁面識別規則
+page_identification:
+  cover_page:
+    keywords: ["產品資訊檔案", "Product Information File", "PIF", "封面"]
+    priority: 1
+  
+  ingredients_page:
+    keywords: ["成分", "ingredients", "全成分", "INCI", "CAS"]
+    priority: 2
+  
+  safety_page:
+    keywords: ["安全", "safety", "毒理", "toxicology", "過敏", "allergy"]
+    priority: 3
+  
+  usage_page:
+    keywords: ["使用", "usage", "方法", "method", "說明", "instruction"]
+    priority: 4
+
+# 後處理設定
+post_process:
+  clean_text: true
+  normalize_format: true
+  validate_data: true
+  merge_similar_fields: true
+
+# 學習規則
+learning_rules: []
+
+# 成本優化
+cost_optimization:
+  use_chunking: true
+  max_chunk_size: 4000
+  overlap_size: 200
+  prioritize_pages: true
+
+
+
+
+
+

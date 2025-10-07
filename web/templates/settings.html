@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="settings.title">ProDocuX - 設定</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- 標題區域 -->
+        <header class="hero">
+            <div class="hero-content">
+                <div class="header-controls">
+                    <div class="language-switcher">
+                        <button id="langBtn" class="lang-btn">
+                            <i class="fas fa-globe"></i>
+                            <span data-i18n="language.switch">切換語言</span>
+                        </button>
+                        <div id="langDropdown" class="lang-dropdown">
+                            <a href="#" data-lang="zh_TW" data-i18n="language.zh_TW">繁體中文</a>
+                            <a href="#" data-lang="en" data-i18n="language.en">English</a>
+                        </div>
+                    </div>
+                </div>
+                <h1 class="logo">
+                    <img src="/static/images/logo.png" alt="ProDocuX Logo" class="logo-image">
+                    <span data-i18n="settings.header">ProDocuX 設定</span>
+                </h1>
+                <p class="tagline" data-i18n="settings.subtitle">自定義檔案處理設定</p>
+            </div>
+        </header>
+
+        <!-- 主要內容 -->
+        <main class="main-content">
+            <!-- 檔案路徑設定 -->
+            <div class="settings-section">
+                <h3>
+                    <i class="fas fa-folder"></i>
+                    <span data-i18n="settings.filePathSettings">檔案路徑設定</span>
+                </h3>
+                
+                <div class="setting-group">
+                    <label for="inputDir">
+                        <i class="fas fa-upload"></i>
+                        <span data-i18n="settings.inputDirectory">輸入目錄</span>
+                    </label>
+                    <div class="path-input-group">
+                        <input type="text" id="inputDir" placeholder="選擇輸入目錄" readonly data-i18n-placeholder="settings.selectInputDirectory">
+                        <button type="button" class="browse-btn" onclick="browseDirectory('inputDir')">
+                            <i class="fas fa-folder-open"></i>
+                            <span data-i18n="buttons.browse">瀏覽</span>
+                        </button>
+                    </div>
+                    <small class="help-text" data-i18n="settings.inputDirectoryHelp">用於存放待處理的檔案</small>
+                </div>
+
+                <div class="setting-group">
+                    <label for="outputDir">
+                        <i class="fas fa-download"></i>
+                        <span data-i18n="settings.outputDirectory">輸出目錄</span>
+                    </label>
+                    <div class="path-input-group">
+                        <input type="text" id="outputDir" placeholder="選擇輸出目錄" readonly data-i18n-placeholder="settings.selectOutputDirectory">
+                        <button type="button" class="browse-btn" onclick="browseDirectory('outputDir')">
+                            <i class="fas fa-folder-open"></i>
+                            <span data-i18n="buttons.browse">瀏覽</span>
+                        </button>
+                    </div>
+                    <small class="help-text" data-i18n="settings.outputDirectoryHelp">用於存放處理結果</small>
+                </div>
+
+                <div class="setting-group">
+                    <label for="templateDir">
+                        <i class="fas fa-file-alt"></i>
+                        <span data-i18n="settings.templateDirectory">模板目錄</span>
+                    </label>
+                    <div class="path-input-group">
+                        <input type="text" id="templateDir" placeholder="選擇模板目錄" readonly data-i18n-placeholder="settings.selectTemplateDirectory">
+                        <button type="button" class="browse-btn" onclick="browseDirectory('templateDir')">
+                            <i class="fas fa-folder-open"></i>
+                            <span data-i18n="buttons.browse">瀏覽</span>
+                        </button>
+                    </div>
+                    <small class="help-text" data-i18n="settings.templateDirectoryHelp">用於存放輸出模板</small>
+                </div>
+
+                <div class="setting-group">
+                    <label for="cacheDir">
+                        <i class="fas fa-database"></i>
+                        <span data-i18n="settings.cacheDirectory">快取目錄</span>
+                    </label>
+                    <div class="path-input-group">
+                        <input type="text" id="cacheDir" placeholder="選擇快取目錄" readonly data-i18n-placeholder="settings.selectCacheDirectory">
+                        <button type="button" class="browse-btn" onclick="browseDirectory('cacheDir')">
+                            <i class="fas fa-folder-open"></i>
+                            <span data-i18n="buttons.browse">瀏覽</span>
+                        </button>
+                    </div>
+                    <small class="help-text" data-i18n="settings.cacheDirectoryHelp">用於存放快取資料</small>
+                </div>
+            </div>
+
+            <!-- AI模型設定 -->
+            <div class="settings-section">
+                <h3>
+                    <i class="fas fa-robot"></i>
+                    <span data-i18n="settings.aiModelSettings">AI模型設定</span>
+                </h3>
+
+                <div class="setting-group">
+                    <label for="aiProvider">
+                        <i class="fas fa-cogs"></i>
+                        <span data-i18n="settings.defaultAIProvider">預設AI提供者</span>
+                    </label>
+                    <select id="aiProvider" onchange="updateModelOptions()">
+                        <option value="openai">OpenAI (ChatGPT)</option>
+                        <option value="claude">Claude (Anthropic)</option>
+                        <option value="gemini">Gemini (Google)</option>
+                        <option value="grok">Grok (xAI)</option>
+                        <option value="microsoft">Microsoft Copilot</option>
+                    </select>
+                    <small class="help-text" data-i18n="settings.aiProviderHelp">選擇預設的AI提供者（系統會優先使用此提供者）</small>
+                </div>
+
+                <div class="setting-group">
+                    <label for="aiModel">
+                        <i class="fas fa-brain"></i>
+                        <span data-i18n="settings.defaultAIModel">預設AI模型</span>
+                    </label>
+                    <select id="aiModel">
+                        <option value="gpt-4">GPT-4 (推薦)</option>
+                        <option value="gpt-4-turbo">GPT-4 Turbo (最新)</option>
+                        <option value="gpt-3.5-turbo">GPT-3.5 Turbo (經濟)</option>
+                    </select>
+                    <small class="help-text" data-i18n="settings.aiModelHelp">選擇預設的AI模型（系統會優先使用此模型）</small>
+                </div>
+
+                <div class="setting-group">
+                    <label for="profileStrategy">
+                        <i class="fas fa-cog"></i>
+                        <span data-i18n="settings.profileStrategy">Profile策略</span>
+                    </label>
+                    <select id="profileStrategy">
+                        <option value="auto" data-i18n="settings.profileStrategyAuto">自動判斷（預設）</option>
+                        <option value="always" data-i18n="settings.profileStrategyAlways">總是附加Profile</option>
+                        <option value="never" data-i18n="settings.profileStrategyNever">從不附加Profile</option>
+                    </select>
+                    <small class="help-text" data-i18n="settings.profileStrategyHelp">控制是否在提示詞中附加Profile配置資訊</small>
+                </div>
+
+                <div class="setting-group">
+                    <label for="openaiApiKey">
+                        <i class="fab fa-openai"></i>
+                        <span data-i18n="settings.openaiAPIKey">OpenAI API金鑰</span>
+                    </label>
+                    <div class="password-input-group">
+                        <input type="password" id="openaiApiKey" placeholder="輸入您的OpenAI API金鑰" data-i18n-placeholder="settings.openaiAPIKeyPlaceholder">
+                        <button type="button" class="toggle-password-btn" onclick="togglePassword('openaiApiKey')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <small class="help-text" data-i18n="settings.openaiAPIKeyHelp">OpenAI API金鑰，用於ChatGPT模型</small>
+                </div>
+
+                <div class="setting-group">
+                    <label for="claudeApiKey">
+                        <i class="fas fa-user-tie"></i>
+                        <span data-i18n="settings.claudeAPIKey">Claude API金鑰</span>
+                    </label>
+                    <div class="password-input-group">
+                        <input type="password" id="claudeApiKey" placeholder="輸入您的Claude API金鑰" data-i18n-placeholder="settings.claudeAPIKeyPlaceholder">
+                        <button type="button" class="toggle-password-btn" onclick="togglePassword('claudeApiKey')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <small class="help-text" data-i18n="settings.claudeAPIKeyHelp">Claude API金鑰</small>
+                </div>
+
+                <div class="setting-group">
+                    <label for="geminiApiKey">
+                        <i class="fab fa-google"></i>
+                        <span data-i18n="settings.geminiAPIKey">Gemini API金鑰</span>
+                    </label>
+                    <div class="password-input-group">
+                        <input type="password" id="geminiApiKey" placeholder="輸入您的Gemini API金鑰" data-i18n-placeholder="settings.geminiAPIKeyPlaceholder">
+                        <button type="button" class="toggle-password-btn" onclick="togglePassword('geminiApiKey')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <small class="help-text" data-i18n="settings.geminiAPIKeyHelp">Gemini API金鑰</small>
+                </div>
+
+                <div class="setting-group">
+                    <label for="grokApiKey">
+                        <i class="fas fa-rocket"></i>
+                        <span data-i18n="settings.grokAPIKey">Grok API金鑰</span>
+                    </label>
+                    <div class="password-input-group">
+                        <input type="password" id="grokApiKey" placeholder="輸入您的Grok API金鑰" data-i18n-placeholder="settings.grokAPIKeyPlaceholder">
+                        <button type="button" class="toggle-password-btn" onclick="togglePassword('grokApiKey')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <small class="help-text" data-i18n="settings.grokAPIKeyHelp">Grok API金鑰</small>
+                </div>
+
+                <div class="setting-group">
+                    <label for="microsoftApiKey">
+                        <i class="fab fa-microsoft"></i>
+                        <span data-i18n="settings.microsoftAPIKey">Microsoft API金鑰</span>
+                    </label>
+                    <div class="password-input-group">
+                        <input type="password" id="microsoftApiKey" placeholder="輸入您的Microsoft API金鑰" data-i18n-placeholder="settings.microsoftAPIKeyPlaceholder">
+                        <button type="button" class="toggle-password-btn" onclick="togglePassword('microsoftApiKey')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <small class="help-text" data-i18n="settings.microsoftAPIKeyHelp">Microsoft Copilot API金鑰</small>
+                </div>
+            </div>
+
+            <!-- 處理設定 -->
+            <div class="settings-section">
+                <h3>
+                    <i class="fas fa-cogs"></i>
+                    <span data-i18n="settings.processingSettings">處理設定</span>
+                </h3>
+
+                <div class="setting-group">
+                    <label for="maxFileSize">
+                        <i class="fas fa-weight-hanging"></i>
+                        <span data-i18n="settings.maxFileSize">最大檔案大小 (MB)</span>
+                    </label>
+                    <input type="number" id="maxFileSize" value="50" min="1" max="500">
+                    <small class="help-text" data-i18n="settings.maxFileSizeHelp">單個檔案的最大大小限制</small>
+                </div>
+
+                <div class="setting-group">
+                    <label for="autoCleanup">
+                        <i class="fas fa-broom"></i>
+                        <span data-i18n="settings.autoCleanup">自動清理</span>
+                    </label>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="autoCleanup" checked>
+                        <label for="autoCleanup" data-i18n="settings.enableAutoCleanup">啟用自動清理舊檔案</label>
+                    </div>
+                    <small class="help-text" data-i18n="settings.autoCleanupHelp">自動刪除超過指定天數的檔案</small>
+                </div>
+
+                <div class="setting-group">
+                    <label for="cleanupDays">
+                        <i class="fas fa-calendar"></i>
+                        <span data-i18n="settings.cleanupDays">清理天數</span>
+                    </label>
+                    <input type="number" id="cleanupDays" value="7" min="1" max="30">
+                    <small class="help-text" data-i18n="settings.cleanupDaysHelp">檔案保留天數</small>
+                </div>
+            </div>
+
+            <!-- 批量處理設定 -->
+            <div class="settings-section">
+                <h3>
+                    <i class="fas fa-layer-group"></i>
+                    <span data-i18n="settings.batchProcessingSettings">批量處理設定</span>
+                </h3>
+
+                <div class="setting-group">
+                    <label for="batchMode">
+                        <i class="fas fa-tasks"></i>
+                        <span data-i18n="settings.batchMode">批量模式</span>
+                    </label>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="batchMode">
+                        <label for="batchMode" data-i18n="settings.enableBatchMode">啟用批量處理模式</label>
+                    </div>
+                    <small class="help-text" data-i18n="settings.batchModeHelp">從輸入目錄自動處理所有檔案</small>
+                </div>
+
+                <div class="setting-group">
+                    <label for="watchFolder">
+                        <i class="fas fa-eye"></i>
+                        <span data-i18n="settings.watchFolder">監控資料夾</span>
+                    </label>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="watchFolder">
+                        <label for="watchFolder" data-i18n="settings.enableWatchFolder">監控輸入目錄變化</label>
+                    </div>
+                    <small class="help-text" data-i18n="settings.watchFolderHelp">自動處理新加入的檔案</small>
+                </div>
+            </div>
+
+            <!-- 按鈕區域 -->
+            <div class="settings-actions">
+                <button class="btn btn-primary" onclick="saveSettings()">
+                    <i class="fas fa-save"></i>
+                    <span data-i18n="buttons.saveSettings">保存設定</span>
+                </button>
+                <button class="btn btn-secondary" onclick="resetSettings()">
+                    <i class="fas fa-undo"></i>
+                    <span data-i18n="buttons.resetSettings">重置設定</span>
+                </button>
+                <button class="btn btn-info" onclick="testSettings()">
+                    <i class="fas fa-test-tube"></i>
+                    <span data-i18n="buttons.testSettings">測試設定</span>
+                </button>
+            </div>
+        </main>
+
+        <!-- 頁腳 -->
+        <footer class="footer">
+            <div class="footer-content">
+                <a href="/" class="back-link">
+                    <i class="fas fa-arrow-left"></i>
+                    <span data-i18n="buttons.backToHome">返回主頁</span>
+                </a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // 模型選項配置
+        const modelOptions = {
+            'openai': [
+                { value: 'gpt-4o', text: 'GPT-4o' },
+                { value: 'gpt-4o-mini', text: 'GPT-4o Mini' },
+                { value: 'gpt-4-turbo', text: 'GPT-4 Turbo' },
+                { value: 'gpt-3.5-turbo', text: 'GPT-3.5 Turbo' }
+            ],
+            'claude': [
+                { value: 'claude-3-5-sonnet-20241022', text: 'Claude 3.5 Sonnet' },
+                { value: 'claude-3-5-haiku-20241022', text: 'Claude 3.5 Haiku' },
+                { value: 'claude-3-opus-20240229', text: 'Claude 3 Opus' }
+            ],
+            'gemini': [
+                { value: 'gemini-2.5-pro', text: 'Gemini 2.5 Pro' },
+                { value: 'gemini-2.5-flash', text: 'Gemini 2.5 Flash' },
+                { value: 'gemini-2.5-flash-lite', text: 'Gemini 2.5 Flash Lite' },
+                { value: 'gemini-2.0-flash', text: 'Gemini 2.0 Flash' },
+                { value: 'gemini-2.0-flash-lite', text: 'Gemini 2.0 Flash Lite' },
+                { value: 'gemini-pro', text: 'Gemini Pro' }
+            ],
+            'grok': [
+                { value: 'grok-2', text: 'Grok-2' },
+                { value: 'grok-beta', text: 'Grok Beta' }
+            ],
+            'microsoft': [
+                { value: 'copilot-gpt-4', text: 'Copilot GPT-4' },
+                { value: 'copilot-gpt-4-turbo', text: 'Copilot GPT-4 Turbo' }
+            ]
+        };
+
+        // 載入設定
+        function loadSettings() {
+            fetch('/api/settings')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const settings = data.settings;
+                        document.getElementById('inputDir').value = settings.input_dir || '';
+                        document.getElementById('outputDir').value = settings.output_dir || '';
+                        document.getElementById('templateDir').value = settings.template_dir || '';
+                        document.getElementById('cacheDir').value = settings.cache_dir || '';
+                        // 載入API金鑰
+                        document.getElementById('openaiApiKey').value = settings.openai_api_key || '';
+                        document.getElementById('claudeApiKey').value = settings.claude_api_key || '';
+                        document.getElementById('geminiApiKey').value = settings.gemini_api_key || '';
+                        document.getElementById('grokApiKey').value = settings.grok_api_key || '';
+                        document.getElementById('microsoftApiKey').value = settings.microsoft_api_key || '';
+                        
+                        // 更新可用的業者選項（只顯示有API金鑰的）
+                        updateAvailableProviders(settings);
+                        
+                        // 設定預設業者（優先選擇有API金鑰的）
+                        const defaultProvider = getDefaultProvider(settings);
+                        document.getElementById('aiProvider').value = defaultProvider;
+                        
+                        // 更新模型選項
+                        updateModelOptions();
+                        
+                        // 設定預設模型（在更新模型選項之後）
+                        if (settings.ai_model) {
+                            document.getElementById('aiModel').value = settings.ai_model;
+                        } else {
+                            const suggestedModel = getSuggestedModel(defaultProvider);
+                            if (suggestedModel) {
+                                document.getElementById('aiModel').value = suggestedModel;
+                            }
+                        }
+                        
+                        // 檢查API金鑰狀態
+                        checkApiKeyStatus();
+                        
+                        document.getElementById('maxFileSize').value = settings.max_file_size || 50;
+                        document.getElementById('autoCleanup').checked = settings.auto_cleanup || false;
+                        document.getElementById('cleanupDays').value = settings.cleanup_days || 7;
+                        document.getElementById('batchMode').checked = settings.batch_mode || false;
+                        document.getElementById('watchFolder').checked = settings.watch_folder || false;
+                    }
+                })
+                .catch(error => {
+                    console.error('載入設定失敗:', error);
+                });
+        }
+
+        // 更新可用的業者選項（只顯示有API金鑰的）
+        function updateAvailableProviders(settings) {
+            const providerSelect = document.getElementById('aiProvider');
+            const apiKeys = {
+                'openai': settings.openai_api_key || '',
+                'claude': settings.claude_api_key || '',
+                'gemini': settings.gemini_api_key || '',
+                'grok': settings.grok_api_key || '',
+                'microsoft': settings.microsoft_api_key || ''
+            };
+            
+            // 清空現有選項
+            providerSelect.innerHTML = '';
+            
+            // 只添加有API金鑰的業者
+            Object.keys(apiKeys).forEach(provider => {
+                if (apiKeys[provider].trim()) {
+                    const option = document.createElement('option');
+                    option.value = provider;
+                    option.textContent = getProviderDisplayName(provider);
+                    providerSelect.appendChild(option);
+                }
+            });
+            
+            // 如果沒有任何API金鑰，顯示提示
+            if (providerSelect.children.length === 0) {
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = '請先設定API金鑰';
+                option.disabled = true;
+                providerSelect.appendChild(option);
+            }
+        }
+        
+        // 獲取業者顯示名稱
+        function getProviderDisplayName(provider) {
+            const names = {
+                'openai': 'OpenAI (ChatGPT)',
+                'claude': 'Claude (Anthropic)',
+                'gemini': 'Gemini (Google)',
+                'grok': 'Grok (xAI)',
+                'microsoft': 'Microsoft Copilot'
+            };
+            return names[provider] || provider;
+        }
+        
+        // 獲取預設業者（優先選擇有API金鑰的）
+        function getDefaultProvider(settings) {
+            const apiKeys = {
+                'openai': settings.openai_api_key || '',
+                'claude': settings.claude_api_key || '',
+                'gemini': settings.gemini_api_key || '',
+                'grok': settings.grok_api_key || '',
+                'microsoft': settings.microsoft_api_key || ''
+            };
+            
+            // 優先選擇當前設定的業者（如果有API金鑰）
+            if (settings.ai_provider && apiKeys[settings.ai_provider].trim()) {
+                return settings.ai_provider;
+            }
+            
+            // 否則選擇第一個有API金鑰的業者
+            for (const [provider, key] of Object.entries(apiKeys)) {
+                if (key.trim()) {
+                    return provider;
+                }
+            }
+            
+            // 如果都沒有，返回openai作為預設
+            return 'openai';
+        }
+        
+        // 獲取建議模型（僅作為建議，不強制使用）
+        function getSuggestedModel(provider) {
+            const suggestions = {
+                'openai': 'gpt-4o',
+                'claude': 'claude-3-5-sonnet-20241022',
+                'gemini': 'gemini-2.5-pro',
+                'grok': 'grok-2',
+                'microsoft': 'copilot-gpt-4'
+            };
+            return suggestions[provider] || null; // 不提供預設值
+        }
+
+        // 更新模型選項
+        function updateModelOptions() {
+            const provider = document.getElementById('aiProvider').value;
+            const modelSelect = document.getElementById('aiModel');
+            
+            // 清空現有選項
+            modelSelect.innerHTML = '';
+            
+            // 添加新選項
+            if (modelOptions[provider]) {
+                modelOptions[provider].forEach(option => {
+                    const optionElement = document.createElement('option');
+                    optionElement.value = option.value;
+                    optionElement.textContent = option.text;
+                    modelSelect.appendChild(optionElement);
+                });
+            }
+        }
+
+        // 檢查API金鑰狀態
+        function checkApiKeyStatus() {
+            const provider = document.getElementById('aiProvider').value;
+            const apiKeyFields = {
+                'openai': 'openaiApiKey',
+                'claude': 'claudeApiKey',
+                'gemini': 'geminiApiKey',
+                'grok': 'grokApiKey',
+                'microsoft': 'microsoftApiKey'
+            };
+            
+            const currentApiKey = document.getElementById(apiKeyFields[provider]).value;
+            const statusElement = document.querySelector('.api-key-status');
+            
+            if (currentApiKey) {
+                if (statusElement) {
+                    statusElement.textContent = '✅ API金鑰已設定';
+                    statusElement.className = 'api-key-status success';
+                }
+            } else {
+                if (statusElement) {
+                    statusElement.textContent = '⚠️ 請設定API金鑰';
+                    statusElement.className = 'api-key-status warning';
+                }
+            }
+        }
+
+        // 切換密碼顯示
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const button = input.nextElementSibling;
+            const icon = button.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+
+        // 瀏覽目錄
+        function browseDirectory(inputId) {
+            // 這裡可以整合檔案選擇器
+            // 由於瀏覽器安全限制，實際實現可能需要其他方案
+            const input = document.getElementById(inputId);
+            const path = prompt('請輸入目錄路徑:');
+            if (path) {
+                input.value = path;
+            }
+        }
+
+        // 保存設定
+        function saveSettings() {
+            const settings = {
+                input_dir: document.getElementById('inputDir').value,
+                output_dir: document.getElementById('outputDir').value,
+                template_dir: document.getElementById('templateDir').value,
+                cache_dir: document.getElementById('cacheDir').value,
+                ai_provider: document.getElementById('aiProvider').value,
+                ai_model: document.getElementById('aiModel').value,
+                prompt: {
+                    profile_strategy: document.getElementById('profileStrategy').value
+                },
+                openai_api_key: document.getElementById('openaiApiKey').value,
+                claude_api_key: document.getElementById('claudeApiKey').value,
+                gemini_api_key: document.getElementById('geminiApiKey').value,
+                grok_api_key: document.getElementById('grokApiKey').value,
+                microsoft_api_key: document.getElementById('microsoftApiKey').value,
+                max_file_size: parseInt(document.getElementById('maxFileSize').value),
+                auto_cleanup: document.getElementById('autoCleanup').checked,
+                cleanup_days: parseInt(document.getElementById('cleanupDays').value),
+                batch_mode: document.getElementById('batchMode').checked,
+                watch_folder: document.getElementById('watchFolder').checked
+            };
+
+            fetch('/api/settings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(settings)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('設定已保存');
+                } else {
+                    alert('保存失敗: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('保存設定失敗:', error);
+                alert('保存失敗');
+            });
+        }
+
+
+        // 重置設定
+        function resetSettings() {
+            if (confirm('確定要重置所有設定嗎？')) {
+                fetch('/api/settings/reset', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        loadSettings();
+                        alert('設定已重置');
+                    } else {
+                        alert('重置失敗: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('重置設定失敗:', error);
+                    alert('重置失敗');
+                });
+            }
+        }
+
+        // 測試設定
+        function testSettings() {
+            fetch('/api/settings/test', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('設定測試通過');
+                } else {
+                    alert('設定測試失敗: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('測試設定失敗:', error);
+                alert('測試失敗');
+            });
+        }
+
+        // 頁面載入時載入設定（由設定頁面專用初始化腳本處理）
+        
+        // API金鑰變更時更新業者選項
+        function updateProvidersOnKeyChange() {
+            const settings = {
+                openai_api_key: document.getElementById('openaiApiKey').value,
+                claude_api_key: document.getElementById('claudeApiKey').value,
+                gemini_api_key: document.getElementById('geminiApiKey').value,
+                grok_api_key: document.getElementById('grokApiKey').value,
+                microsoft_api_key: document.getElementById('microsoftApiKey').value
+            };
+            
+            updateAvailableProviders(settings);
+        }
+    </script>
+    
+    <!-- 載入國際化JavaScript -->
+    <script src="/static/js/main.js"></script>
+    
+    <!-- 設定頁面專用初始化 -->
+    <script>
+        // 等待 main.js 初始化完成後，執行設定頁面專用功能
+        document.addEventListener('DOMContentLoaded', function() {
+            // 延遲執行，確保 main.js 的 ProDocuX 實例已經初始化
+            setTimeout(() => {
+                if (window.prodocux) {
+                    console.log('ProDocuX 已初始化，開始載入設定...');
+                    loadSettings();
+                    
+                    // 為所有API金鑰輸入框添加變更監聽器
+                    const apiKeyFields = ['openaiApiKey', 'claudeApiKey', 'geminiApiKey', 'grokApiKey', 'microsoftApiKey'];
+                    apiKeyFields.forEach(fieldId => {
+                        const field = document.getElementById(fieldId);
+                        if (field) {
+                            field.addEventListener('input', function() {
+                                // 延遲更新，避免頻繁觸發
+                                clearTimeout(this.updateTimeout);
+                                this.updateTimeout = setTimeout(() => {
+                                    updateProvidersOnKeyChange();
+                                }, 500);
+                            });
+                        }
+                    });
+                } else {
+                    console.warn('ProDocuX 未初始化，重試...');
+                    // 如果 ProDocuX 還沒初始化，再等一會兒
+                    setTimeout(() => {
+                        if (window.prodocux) {
+                            loadSettings();
+                        }
+                    }, 1000);
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>

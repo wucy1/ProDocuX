@@ -1,0 +1,158 @@
+{
+  "last_updated": "2025-01-06",
+  "source": "Web search from official documentation and pricing pages",
+  "note": "定價可能隨時變動，請定期檢查官方網站獲取最新資訊",
+  "providers": {
+    "openai": {
+      "name": "OpenAI",
+      "website": "https://openai.com/pricing",
+      "models": {
+        "gpt-4o": {
+          "input_per_1k": 0.005,
+          "output_per_1k": 0.015,
+          "context_window": 128000,
+          "description": "GPT-4o - 最新多模態模型"
+        },
+        "gpt-4o-mini": {
+          "input_per_1k": 0.00015,
+          "output_per_1k": 0.0006,
+          "context_window": 128000,
+          "description": "GPT-4o-mini - 成本優化版本"
+        },
+        "gpt-4-turbo": {
+          "input_per_1k": 0.01,
+          "output_per_1k": 0.03,
+          "context_window": 128000,
+          "description": "GPT-4 Turbo - 高性能版本"
+        },
+        "gpt-3.5-turbo": {
+          "input_per_1k": 0.0005,
+          "output_per_1k": 0.0015,
+          "context_window": 16000,
+          "description": "GPT-3.5 Turbo - 經濟實惠版本"
+        }
+      }
+    },
+    "anthropic": {
+      "name": "Anthropic",
+      "website": "https://www.anthropic.com/pricing",
+      "models": {
+        "claude-3-5-sonnet-20241022": {
+          "input_per_1k": 0.003,
+          "output_per_1k": 0.015,
+          "context_window": 200000,
+          "description": "Claude 3.5 Sonnet - 最新版本"
+        },
+        "claude-3-5-haiku-20241022": {
+          "input_per_1k": 0.0008,
+          "output_per_1k": 0.004,
+          "context_window": 200000,
+          "description": "Claude 3.5 Haiku - 快速版本"
+        },
+        "claude-3-opus-20240229": {
+          "input_per_1k": 0.015,
+          "output_per_1k": 0.075,
+          "context_window": 200000,
+          "description": "Claude 3 Opus - 最高性能版本"
+        }
+      }
+    },
+    "google": {
+      "name": "Google",
+      "website": "https://ai.google.dev/pricing",
+      "models": {
+        "gemini-2.5-pro": {
+          "input_per_1k": 0.00125,
+          "output_per_1k": 0.01,
+          "context_window": 2000000,
+          "description": "Gemini 2.5 Pro - 最新最強大的模型"
+        },
+        "gemini-2.5-flash": {
+          "input_per_1k": 0.0003,
+          "output_per_1k": 0.0025,
+          "context_window": 1000000,
+          "description": "Gemini 2.5 Flash - 快速且經濟的模型"
+        },
+        "gemini-2.5-flash-lite": {
+          "input_per_1k": 0.0001,
+          "output_per_1k": 0.0004,
+          "context_window": 1000000,
+          "description": "Gemini 2.5 Flash Lite - 最具成本效益"
+        },
+        "gemini-2.0-flash": {
+          "input_per_1k": 0.0001,
+          "output_per_1k": 0.0004,
+          "context_window": 1000000,
+          "description": "Gemini 2.0 Flash - 新一代多模態模型"
+        },
+        "gemini-2.0-flash-lite": {
+          "input_per_1k": 0.000075,
+          "output_per_1k": 0.0003,
+          "context_window": 1000000,
+          "description": "Gemini 2.0 Flash Lite - 成本效益最高"
+        },
+        "gemini-1.5-pro": {
+          "input_per_1k": 0.00125,
+          "output_per_1k": 0.005,
+          "context_window": 2000000,
+          "description": "Gemini 1.5 Pro - 大上下文窗口版本"
+        },
+        "gemini-1.5-flash-002": {
+          "input_per_1k": 0.000075,
+          "output_per_1k": 0.0003,
+          "context_window": 1000000,
+          "description": "Gemini 1.5 Flash - 快速版本"
+        },
+        "gemini-2.0-flash-exp": {
+          "input_per_1k": 0.000075,
+          "output_per_1k": 0.0003,
+          "context_window": 1000000,
+          "description": "Gemini 2.0 Flash - 實驗版本"
+        },
+        "gemini-pro": {
+          "input_per_1k": 0.0005,
+          "output_per_1k": 0.0015,
+          "context_window": 30720,
+          "description": "Gemini Pro - 標準版本"
+        }
+      }
+    },
+    "xai": {
+      "name": "xAI",
+      "website": "https://x.ai/pricing",
+      "models": {
+        "grok-2": {
+          "input_per_1k": 0.0003,
+          "output_per_1k": 0.001,
+          "context_window": 128000,
+          "description": "Grok-2 - 最新版本"
+        },
+        "grok-beta": {
+          "input_per_1k": 0.0002,
+          "output_per_1k": 0.0015,
+          "context_window": 128000,
+          "description": "Grok Beta - 測試版本"
+        }
+      }
+    },
+    "microsoft": {
+      "name": "Microsoft",
+      "website": "https://azure.microsoft.com/pricing/details/cognitive-services/openai-service/",
+      "models": {
+        "copilot-gpt-4": {
+          "input_per_1k": 0.005,
+          "output_per_1k": 0.015,
+          "context_window": 128000,
+          "description": "Copilot GPT-4 - 使用 Azure OpenAI gpt-4o 定價"
+        },
+        "copilot-gpt-4-turbo": {
+          "input_per_1k": 0.01,
+          "output_per_1k": 0.03,
+          "context_window": 128000,
+          "description": "Copilot GPT-4 Turbo - 使用 Azure OpenAI gpt-4-turbo 定價"
+        }
+      }
+    }
+  }
+}
+

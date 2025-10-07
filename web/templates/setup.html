@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="setup.title">ProDocuX 初始設定</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .setup-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        .setup-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .setup-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .setup-header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .setup-content {
+            padding: 40px;
+        }
+        
+        .step {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        .step.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .step-title {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .step-description {
+            color: #666;
+            margin-bottom: 30px;
+            text-align: center;
+            line-height: 1.6;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .option-card {
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .option-card:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        
+        .option-card.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .option-card h3 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .option-card p {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5a6fd8;
+        }
+        
+        .btn-secondary {
+            background: #e1e5e9;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #d1d5d9;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .progress-bar {
+            background: #e1e5e9;
+            height: 6px;
+            border-radius: 3px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: #667eea;
+            height: 100%;
+            width: 25%;
+            transition: width 0.3s;
+        }
+        
+        .help-text {
+            background: #f8f9ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .help-text h4 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .help-text p {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <div class="setup-header">
+            <h1 data-i18n="setup.header">🚀 ProDocuX 初始設定</h1>
+            <p data-i18n="setup.subtitle">讓我們一步步引導您完成設定</p>
+        </div>
+        
+        <div class="setup-content">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <!-- 步驟 1: 工作空間設定 -->
+            <div class="step active" id="step1">
+                <h2 class="step-title" data-i18n="setup.step1.title">📁 步驟 1/4: 工作空間設定</h2>
+                <p class="step-description" data-i18n="setup.step1.description">
+                    ProDocuX需要一個工作目錄來存放您的檔案和設定
+                </p>
+                
+                <div class="form-group">
+                    <label for="workspacePath" data-i18n="setup.step1.workspacePath">工作目錄路徑</label>
+                    <input type="text" id="workspacePath" placeholder="請輸入工作目錄路徑" value="" data-i18n-placeholder="setup.step1.workspacePathPlaceholder">
+                    <div class="help-text">
+                        <h4 data-i18n="setup.step1.suggestionTitle">💡 建議位置</h4>
+                        <p data-i18n="setup.step1.suggestionText">我們建議使用您的文檔資料夾，方便找到和管理檔案</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 步驟 2: AI提供者選擇 -->
+            <div class="step" id="step2">
+                <h2 class="step-title" data-i18n="setup.step2.title">🤖 步驟 2/4: AI提供者選擇</h2>
+                <p class="step-description" data-i18n="setup.step2.description">
+                    請選擇您有API金鑰的AI提供者
+                </p>
+                
+                <div class="option-card" data-provider="openai">
+                    <h3 data-i18n="setup.step2.openai">OpenAI (ChatGPT)</h3>
+                    <p data-i18n="setup.step2.openaiDesc">最受歡迎的AI服務，功能強大，支援多種任務</p>
+                </div>
+                
+                <div class="option-card" data-provider="claude">
+                    <h3 data-i18n="setup.step2.claude">Claude (Anthropic)</h3>
+                    <p data-i18n="setup.step2.claudeDesc">擅長文檔分析和理解，對中文支援良好</p>
+                </div>
+                
+                <div class="option-card" data-provider="gemini">
+                    <h3 data-i18n="setup.step2.gemini">Gemini (Google)</h3>
+                    <p data-i18n="setup.step2.geminiDesc">Google的AI服務，免費額度較大</p>
+                </div>
+                
+                <div class="option-card" data-provider="grok">
+                    <h3 data-i18n="setup.step2.grok">Grok (xAI)</h3>
+                    <p data-i18n="setup.step2.grokDesc">新興的AI服務，價格相對便宜</p>
+                </div>
+                
+                <div class="option-card" data-provider="microsoft">
+                    <h3>Microsoft Copilot</h3>
+                    <p>微軟的AI服務，與Office整合良好</p>
+                </div>
+            </div>
+            
+            <!-- 步驟 3: API金鑰設定 -->
+            <div class="step" id="step3">
+                <h2 class="step-title" data-i18n="setup.step3.title">🔑 步驟 3/4: API金鑰設定</h2>
+                <p class="step-description" data-i18n="setup.step3.description">
+                    請輸入您的API金鑰
+                </p>
+                
+                <div class="form-group">
+                    <label for="apiKey" data-i18n="setup.step3.apiKey">API金鑰</label>
+                    <input type="password" id="apiKey" placeholder="請輸入您的API金鑰" data-i18n-placeholder="setup.step3.apiKeyPlaceholder">
+                    <div class="help-text">
+                        <h4 data-i18n="setup.step3.helpTitle">🔗 如何獲取API金鑰？</h4>
+                        <p id="apiKeyHelp" data-i18n="setup.step3.helpText">請先選擇AI提供者</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 步驟 4: 桌面快捷方式 -->
+            <div class="step" id="step4">
+                <h2 class="step-title" data-i18n="setup.step4.title">🖥️ 步驟 4/4: 桌面快捷方式</h2>
+                <p class="step-description" data-i18n="setup.step4.description">
+                    選擇要在桌面創建的快捷方式
+                </p>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="shortcutWorkspace" checked> 
+                        <span data-i18n="setup.step4.workspaceShortcut">工作目錄快捷方式</span>
+                    </label>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="shortcutInput" checked> 
+                        <span data-i18n="setup.step4.inputShortcut">輸入檔案資料夾快捷方式</span>
+                    </label>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="shortcutOutput" checked> 
+                        <span data-i18n="setup.step4.outputShortcut">輸出結果資料夾快捷方式</span>
+                    </label>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="shortcutTemplate"> 
+                        <span data-i18n="setup.step4.templateShortcut">模板資料夾快捷方式</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn btn-secondary" id="prevBtn" onclick="prevStep()" disabled data-i18n="buttons.previous">上一步</button>
+                <button class="btn btn-primary" id="nextBtn" onclick="nextStep()" data-i18n="buttons.next">下一步</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+        let selectedProvider = '';
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 設定預設工作目錄
+            const defaultPath = 'C:\\Users\\' + '{{ user_name }}' + '\\Documents\\ProDocuX_Workspace';
+            document.getElementById('workspacePath').value = defaultPath;
+            
+            // 綁定事件
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    selectProvider(this.dataset.provider);
+                });
+            });
+        });
+        
+        function selectProvider(provider) {
+            selectedProvider = provider;
+            
+            // 更新選中狀態
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.querySelector(`[data-provider="${provider}"]`).classList.add('selected');
+            
+            // 更新API金鑰說明
+            updateApiKeyHelp(provider);
+        }
+        
+        function updateApiKeyHelp(provider) {
+            const helpText = document.getElementById('apiKeyHelp');
+            const helpTexts = {
+                'openai': '前往 <a href="https://platform.openai.com/api-keys" target="_blank">OpenAI API Keys</a> 或 <a href="https://iopena.com/" target="_blank">iOpenAI</a> 獲取金鑰',
+                'claude': '前往 <a href="https://console.anthropic.com/" target="_blank">Anthropic Console</a> 獲取金鑰',
+                'gemini': '前往 <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio</a> 獲取金鑰',
+                'grok': '前往 <a href="https://console.x.ai/" target="_blank">xAI Console</a> 獲取金鑰',
+                'microsoft': '前往 <a href="https://azure.microsoft.com/pricing/details/cognitive-services/openai-service/" target="_blank">Azure OpenAI Service</a> 獲取金鑰'
+            };
+            helpText.innerHTML = helpTexts[provider] || '請先選擇AI提供者';
+        }
+        
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                // 驗證當前步驟
+                if (validateCurrentStep()) {
+                    currentStep++;
+                    showStep(currentStep);
+                    updateProgress();
+                    updateButtons();
+                }
+            } else {
+                // 完成設定
+                completeSetup();
+            }
+        }
+        
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+                updateProgress();
+                updateButtons();
+            }
+        }
+        
+        function showStep(step) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step${step}`).classList.add('active');
+        }
+        
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+        
+        function updateButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            prevBtn.disabled = currentStep === 1;
+            
+            if (currentStep === totalSteps) {
+                nextBtn.textContent = prodocux ? prodocux.getTranslation('buttons.completeSetup') : '完成設定';
+            } else {
+                nextBtn.textContent = prodocux ? prodocux.getTranslation('buttons.next') : '下一步';
+            }
+        }
+        
+        function validateCurrentStep() {
+            switch(currentStep) {
+                case 1:
+                    const workspacePath = document.getElementById('workspacePath').value.trim();
+                    if (!workspacePath) {
+                        alert(prodocux ? prodocux.getTranslation('messages.enterWorkspacePath') : '請輸入工作目錄路徑');
+                        return false;
+                    }
+                    return true;
+                    
+                case 2:
+                    if (!selectedProvider) {
+                        alert(prodocux ? prodocux.getTranslation('messages.selectAIProvider') : '請選擇AI提供者');
+                        return false;
+                    }
+                    return true;
+                    
+                case 3:
+                    const apiKey = document.getElementById('apiKey').value.trim();
+                    if (!apiKey) {
+                        alert(prodocux ? prodocux.getTranslation('messages.enterAPIKey') : '請輸入API金鑰');
+                        return false;
+                    }
+                    return true;
+                    
+                case 4:
+                    return true;
+                    
+                default:
+                    return true;
+            }
+        }
+        
+        function completeSetup() {
+            // 收集設定資料
+            const settings = {
+                workspace_path: document.getElementById('workspacePath').value.trim(),
+                ai_provider: selectedProvider,
+                api_key: document.getElementById('apiKey').value.trim(),
+                shortcuts: {
+                    workspace: document.getElementById('shortcutWorkspace').checked,
+                    input: document.getElementById('shortcutInput').checked,
+                    output: document.getElementById('shortcutOutput').checked,
+                    template: document.getElementById('shortcutTemplate').checked
+                }
+            };
+            
+            // 發送設定到後端
+            fetch('/api/setup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(settings)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(prodocux ? prodocux.getTranslation('messages.setupComplete') : '設定完成！正在重新載入...');
+                    window.location.href = '/';
+                } else {
+                    alert((prodocux ? prodocux.getTranslation('messages.setupFailed') : '設定失敗') + '：' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(prodocux ? prodocux.getTranslation('messages.setupFailedRetry') : '設定失敗，請重試');
+            });
+        }
+    </script>
+</body>
+</html>
