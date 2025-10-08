@@ -1,0 +1,29 @@
+# ProDocuX 使用說明
+
+## 快速開始
+
+1. 執行安裝腳本
+   - Windows: 雙擊 install.bat
+   - Linux/Mac: 執行 ./install.sh
+
+2. 設定API金鑰
+   - 編輯 .env 檔案
+   - 填入您的 OpenAI API 金鑰
+
+3. 啟動應用
+   - 雙擊 ProDocuX.exe (Windows)
+   - 或執行 ./ProDocuX (Linux/Mac)
+
+4. 在瀏覽器中開啟 http://localhost:5000
+
+## 功能特色
+
+- AI智能文檔提取
+- 多格式支援 (PDF, DOCX, DOC)
+- 自動學習優化
+- 成本估算
+- 批量處理
+
+## 技術支援
+
+如有問題，請訪問 GitHub: https://github.com/wucy1/ProDocuX

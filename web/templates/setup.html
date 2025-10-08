@@ -35,6 +35,27 @@
             color: white;
             padding: 40px;
             text-align: center;
+            position: relative;
+        }
+        
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        
+        .language-selector select {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+        
+        .language-selector select option {
+            background: white;
+            color: #333;
         }
         
         .setup-header h1 {
@@ -210,6 +231,12 @@
 <body>
     <div class="setup-container">
         <div class="setup-header">
+            <div class="language-selector">
+                <select id="languageSelect" onchange="switchLanguage(this.value)">
+                    <option value="en">English</option>
+                    <option value="zh_TW">繁體中文</option>
+                </select>
+            </div>
             <h1 data-i18n="setup.header">🚀 ProDocuX 初始設定</h1>
             <p data-i18n="setup.subtitle">讓我們一步步引導您完成設定</p>
         </div>
@@ -475,18 +502,116 @@
                 },
                 body: JSON.stringify(settings)
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                return response.json();
+            })
             .then(data => {
+                console.log('Setup response:', data);
                 if (data.success) {
-                    alert(prodocux ? prodocux.getTranslation('messages.setupComplete') : '設定完成！正在重新載入...');
+                    console.log('Setup successful, redirecting to home page...');
+                    alert('設定完成！正在跳轉到首頁...');
                     window.location.href = '/';
                 } else {
-                    alert((prodocux ? prodocux.getTranslation('messages.setupFailed') : '設定失敗') + '：' + data.error);
+                    console.error('Setup failed:', data);
+                    alert('設定失敗：' + (data.error || '未知錯誤'));
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
-                alert(prodocux ? prodocux.getTranslation('messages.setupFailedRetry') : '設定失敗，請重試');
+                console.error('Setup error:', error);
+                alert('設定失敗，請重試。錯誤：' + error.message);
+            });
+        }
+        
+        // 語言切換功能
+        async function switchLanguage(lang) {
+            try {
+                const response = await fetch('/api/language', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ language: lang })
+                });
+                
+                if (response.ok) {
+                    // 直接載入翻譯，不重新載入頁面
+                    await loadTranslations(lang);
+                }
+            } catch (error) {
+                console.error('語言切換失敗:', error);
+            }
+        }
+        
+        // 頁面載入時設定語言選擇器
+        document.addEventListener('DOMContentLoaded', async function() {
+            let lang = null;
+            
+            // 1. 優先檢查 URL 參數
+            const urlParams = new URLSearchParams(window.location.search);
+            lang = urlParams.get('lang');
+            
+            // 2. 如果沒有 URL 參數，檢查 session 中是否已設定語言
+            if (!lang) {
+                try {
+                    const response = await fetch('/api/language');
+                    if (response.ok) {
+                        const data = await response.json();
+                        lang = data.language;
+                    }
+                } catch (error) {
+                    console.log('無法從session獲取語言');
+                }
+            }
+            
+            // 3. 如果還是沒有，才檢查瀏覽器語言（但只在首次訪問時）
+            if (!lang) {
+                const browserLang = navigator.language || navigator.userLanguage;
+                lang = browserLang.startsWith('zh') ? 'zh_TW' : 'en';
+            }
+            
+            // 設定選擇器值
+            document.getElementById('languageSelect').value = lang;
+            
+            // 載入翻譯
+            await loadTranslations(lang);
+        });
+        
+        // 載入翻譯
+        async function loadTranslations(lang) {
+            try {
+                const response = await fetch(`/api/i18n/${lang}`);
+                if (response.ok) {
+                    const translations = await response.json();
+                    updateUI(translations);
+                }
+            } catch (error) {
+                console.error('載入翻譯失敗:', error);
+            }
+        }
+        
+        // 更新UI文字
+        function updateUI(translations) {
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                const keys = key.split('.');
+                let value = translations;
+                
+                for (const k of keys) {
+                    if (value && value[k]) {
+                        value = value[k];
+                    } else {
+                        value = null;
+                        break;
+                    }
+                }
+                
+                if (value) {
+                    element.textContent = value;
+                }
             });
         }
     </script>

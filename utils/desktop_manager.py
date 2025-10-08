@@ -243,8 +243,10 @@ class DesktopManager:
             shortcut.WorkingDirectory = str(target_path)
             shortcut.IconLocation = str(target_path)
             shortcut.save()
+            logger.info(f"Windows快捷方式已創建: {shortcut_path}")
             
         except ImportError:
+            logger.warning("win32com模組未安裝，使用批次檔替代")
             # 如果沒有win32com，創建批次檔
             batch_path = shortcut_path.with_suffix('.bat')
             with open(batch_path, 'w', encoding='utf-8') as f:

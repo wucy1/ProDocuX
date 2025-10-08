@@ -137,6 +137,28 @@ temp/
 .DS_Store
 Thumbs.db
 
+# Build artifacts
+build/
+dist/
+*.spec
+*.manifest
+
+# Release files (keep structure but ignore content)
+release/ProDocuX.exe
+release/*.zip
+release/*.tar.gz
+
+# Backup directories
+backup/
+ProDocuX_*/
+
+# Verification scripts
+verify_rc1.py
+
+# Icon source files (keep converted icon)
+deploy/convert_icon.py
+deploy/create_simple_icon.py
+
 # IDE
 .vscode/
 .idea/
