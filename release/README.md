@@ -13,6 +13,29 @@
 
 ProDocuX is an AI-powered intelligent document conversion platform that transforms various document formats (PDF, Word, etc.) into structured documents. It supports multiple AI models including OpenAI, Claude, Gemini, and Grok, allowing you to choose the most suitable AI assistant for your needs.
 
+## 📦 RC1 Release - Quick Start
+
+### Installation
+1. **Download**: `ProDocuX.exe` (approximately 100MB)
+2. **Run**: Double-click the executable file
+3. **Setup**: Follow the browser-based setup wizard
+4. **Start**: Begin processing your documents
+
+### System Requirements
+- Windows 10/11 (64-bit)
+- 4GB RAM minimum (8GB recommended)
+- Internet connection for AI processing
+
+### First Time Setup
+1. Launch `ProDocuX.exe`
+2. Browser will automatically open to setup page
+3. Select your preferred AI provider
+4. Enter your API key
+5. Choose workspace location
+6. Create desktop shortcuts (optional)
+
+> **RC1 Status**: This is a Release Candidate version. Please report any issues via [GitHub Issues](https://github.com/wucy1/ProDocuX/issues).
+
 ## ✨ Key Features
 
 ### 🔄 Intelligent Document Conversion

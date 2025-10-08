@@ -4,6 +4,19 @@
 
 ### 1. 首次啟動
 
+#### 方式一：使用可執行檔（推薦）
+
+1. **下載 RC 版本**
+   - 前往 [GitHub Releases](https://github.com/wucy1/ProDocuX/releases)
+   - 下載 `ProDocuX.exe`（約 100MB）
+   - 無需安裝 Python 環境
+
+2. **啟動程式**
+   - 雙擊 `ProDocuX.exe` 啟動
+   - 程式會自動開啟瀏覽器並導向設置頁面
+
+#### 方式二：從原始碼安裝
+
 1. **下載並安裝**
    ```bash
    git clone https://github.com/wucy1/ProDocuX.git
@@ -22,6 +35,20 @@
    - 輸入對應的API金鑰
    - 選擇工作目錄位置
    - 選擇要創建的桌面快捷方式
+
+### 📋 RC 版本特別說明
+
+**RC1 版本特點：**
+- ✅ 檔案上傳功能正常
+- ✅ 工作空間目錄管理優化
+- ✅ 多AI模型支援完整
+- ✅ 中英文介面切換
+- ⚠️ 這是發布候選版本，歡迎回報問題
+
+**使用建議：**
+- 首次使用建議選擇可執行檔版本
+- 如遇到問題，請至 [GitHub Issues](https://github.com/wucy1/ProDocuX/issues) 回報
+- 建議定期備份工作目錄中的重要檔案
 
 ### 2. 使用Web介面
 

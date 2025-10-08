@@ -4,6 +4,19 @@
 
 ### 1. First Launch
 
+#### Method 1: Using Executable (Recommended)
+
+1. **Download RC Version**
+   - Visit [GitHub Releases](https://github.com/wucy1/ProDocuX/releases)
+   - Download `ProDocuX.exe` (approximately 100MB)
+   - No Python environment installation required
+
+2. **Start the Application**
+   - Double-click `ProDocuX.exe` to launch
+   - The application will automatically open browser and redirect to setup page
+
+#### Method 2: Install from Source Code
+
 1. **Download and Install**
    ```bash
    git clone https://github.com/wucy1/ProDocuX.git
@@ -22,6 +35,20 @@
    - Enter corresponding API key
    - Choose working directory location
    - Select desktop shortcuts to create
+
+### 📋 RC Version Special Notes
+
+**RC1 Version Features:**
+- ✅ File upload functionality working properly
+- ✅ Workspace directory management optimized
+- ✅ Multi-AI model support complete
+- ✅ Chinese/English interface switching
+- ⚠️ This is a release candidate version, feedback welcome
+
+**Usage Recommendations:**
+- First-time users recommended to use executable version
+- If you encounter issues, please report at [GitHub Issues](https://github.com/wucy1/ProDocuX/issues)
+- Recommend regular backup of important files in workspace directory
 
 ### 2. Using Web Interface
 

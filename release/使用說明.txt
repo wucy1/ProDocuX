@@ -1,29 +1,46 @@
-# ProDocuX 使用說明
+# ProDocuX RC1 使用說明
 
-## 快速開始
+## 🚀 快速開始
 
-1. 執行安裝腳本
-   - Windows: 雙擊 install.bat
-   - Linux/Mac: 執行 ./install.sh
+### 1. 啟動應用
+- 雙擊 `ProDocuX.exe` 啟動程式
+- 程式會自動開啟瀏覽器並導向設置頁面
 
-2. 設定API金鑰
-   - 編輯 .env 檔案
-   - 填入您的 OpenAI API 金鑰
+### 2. 完成初始設置
+- 選擇AI提供者（OpenAI、Claude、Gemini或Grok）
+- 輸入對應的API金鑰
+- 選擇工作目錄位置
+- 選擇要創建的桌面快捷方式
 
-3. 啟動應用
-   - 雙擊 ProDocuX.exe (Windows)
-   - 或執行 ./ProDocuX (Linux/Mac)
+### 3. 開始使用
+- 訪問 `http://localhost:5000` 進入主介面
+- 上傳要處理的PDF或Word檔案
+- 選擇輸出模板
+- 點擊「開始處理」按鈕
 
-4. 在瀏覽器中開啟 http://localhost:5000
+## ✨ RC1 版本特色
 
-## 功能特色
+- ✅ 檔案上傳功能正常
+- ✅ 工作空間目錄管理優化
+- ✅ 多AI模型支援完整
+- ✅ 中英文介面切換
+- ✅ 無需安裝Python環境
+- ⚠️ 這是發布候選版本，歡迎回報問題
 
-- AI智能文檔提取
-- 多格式支援 (PDF, DOCX, DOC)
-- 自動學習優化
-- 成本估算
-- 批量處理
+## 📋 系統需求
 
-## 技術支援
+- Windows 10/11 (64-bit)
+- 4GB RAM 最低需求（建議8GB）
+- 網路連線（用於AI處理）
 
-如有問題，請訪問 GitHub: https://github.com/wucy1/ProDocuX
+## 🔧 技術支援
+
+如有問題，請訪問：
+- GitHub Issues: https://github.com/wucy1/ProDocuX/issues
+- 官方網站: https://prodocux.com
+
+## 📝 注意事項
+
+- 建議定期備份工作目錄中的重要檔案
+- 首次使用建議選擇可執行檔版本
+- 如遇到問題，請詳細描述操作步驟和錯誤訊息
