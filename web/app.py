@@ -956,7 +956,16 @@ def create_app():
                 return jsonify({'error': '缺少必要參數'}), 400
             
             # 保存上傳的Word文檔
-            upload_dir = Path("uploads")
+            # 對於打包版本，使用工作空間的 uploads 目錄
+            if getattr(sys, 'frozen', False):
+                try:
+                    from utils.desktop_manager import DesktopManager
+                    dm = DesktopManager()
+                    upload_dir = dm.workspace_dir / "uploads"
+                except:
+                    upload_dir = Path("uploads")
+            else:
+                upload_dir = Path("uploads")
             upload_dir.mkdir(exist_ok=True)
             
             import time

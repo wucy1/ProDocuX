@@ -6,6 +6,7 @@
 """
 
 import os
+import sys
 import logging
 import logging.handlers
 from pathlib import Path
@@ -31,7 +32,16 @@ def setup_logger(name: str = "prodocux", level: str = "INFO") -> logging.Logger:
         return logger
     
     # 創建日誌目錄
-    log_dir = Path("logs")
+    # 對於打包版本，使用工作空間的 logs 目錄
+    if getattr(sys, 'frozen', False):
+        try:
+            from utils.desktop_manager import DesktopManager
+            dm = DesktopManager()
+            log_dir = dm.workspace_dir / "logs"
+        except:
+            log_dir = Path("logs")
+    else:
+        log_dir = Path("logs")
     log_dir.mkdir(exist_ok=True)
     
     # 創建格式化器
@@ -121,7 +131,16 @@ def log_learning_update(profile: str, rules_count: int):
 def cleanup_old_logs(days: int = 30):
     """清理舊日誌檔案"""
     logger = get_logger()
-    log_dir = Path("logs")
+    # 對於打包版本，使用工作空間的 logs 目錄
+    if getattr(sys, 'frozen', False):
+        try:
+            from utils.desktop_manager import DesktopManager
+            dm = DesktopManager()
+            log_dir = dm.workspace_dir / "logs"
+        except:
+            log_dir = Path("logs")
+    else:
+        log_dir = Path("logs")
     
     if not log_dir.exists():
         return

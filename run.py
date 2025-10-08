@@ -106,18 +106,20 @@ def create_directories():
             return False
         
         # 回退到傳統方式（僅限開發環境）
-        directories = [
-            'uploads',
-            'outputs', 
-            'cache',
-            'cache/learning',
-            'profiles',
-            'templates',
-            'prompts'
-        ]
-        
-        for directory in directories:
-            Path(directory).mkdir(parents=True, exist_ok=True)
+        # 對於打包版本，不應該在 dist 目錄創建這些目錄
+        if not getattr(sys, 'frozen', False):
+            directories = [
+                'uploads',
+                'outputs', 
+                'cache',
+                'cache/learning',
+                'profiles',
+                'templates',
+                'prompts'
+            ]
+            
+            for directory in directories:
+                Path(directory).mkdir(parents=True, exist_ok=True)
         
         print("目錄結構已準備完成（傳統模式）")
         return True

@@ -461,7 +461,8 @@ class SettingsManager:
             "template": workspace_dir / "templates",
             "cache": workspace_dir / "cache",
             "profiles": workspace_dir / "profiles",
-            "prompts": workspace_dir / "prompts"
+            "prompts": workspace_dir / "prompts",
+            "uploads": workspace_dir / "uploads"
         }
     
     def ensure_directories(self) -> bool:

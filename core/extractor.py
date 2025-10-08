@@ -6,6 +6,7 @@
 """
 
 import os
+import sys
 import json
 import logging
 from pathlib import Path
@@ -917,7 +918,18 @@ class DocumentExtractor:
     
     def _load_prompt_template(self, template_name: str) -> str:
         """載入提示詞模板"""
-        prompt_file = Path("prompts") / f"{template_name}.md"
+        # 對於打包版本，使用工作空間的 prompts 目錄
+        if getattr(sys, 'frozen', False):
+            try:
+                from utils.desktop_manager import DesktopManager
+                dm = DesktopManager()
+                prompts_dir = dm.workspace_dir / "prompts"
+            except:
+                prompts_dir = Path("prompts")
+        else:
+            prompts_dir = Path("prompts")
+        
+        prompt_file = prompts_dir / f"{template_name}.md"
         try:
             with open(prompt_file, 'r', encoding='utf-8') as f:
                 return f.read()

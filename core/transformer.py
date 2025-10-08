@@ -6,6 +6,7 @@
 """
 
 import os
+import sys
 import json
 import logging
 from pathlib import Path
@@ -27,8 +28,16 @@ class DocumentTransformer:
             sm = SettingsManager()
             self.template_dir = Path(sm.get_directory_paths()['template'])
         except Exception:
-            # 後備：專案內的 templates（不建議，但避免開發時崩潰）
-            self.template_dir = Path("templates")
+            # 後備：對於打包版本，使用工作空間的 templates
+            if getattr(sys, 'frozen', False):
+                try:
+                    from utils.desktop_manager import DesktopManager
+                    dm = DesktopManager()
+                    self.template_dir = dm.workspace_dir / "templates"
+                except:
+                    self.template_dir = Path("templates")
+            else:
+                self.template_dir = Path("templates")
         
         # 載入Profile資訊
         self.profile_fields = {}

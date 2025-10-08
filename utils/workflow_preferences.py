@@ -5,6 +5,8 @@
 
 import json
 import logging
+import sys
+import os
 from pathlib import Path
 from typing import Dict, Any, Optional
 from datetime import datetime
@@ -14,14 +16,28 @@ logger = logging.getLogger(__name__)
 class WorkflowPreferencesManager:
     """工作流程偏好設定管理器"""
     
-    def __init__(self, preferences_file: str = "workflow_preferences.json"):
+    def __init__(self, preferences_file: str = None):
         """
         初始化偏好設定管理器
         
         Args:
-            preferences_file: 偏好設定文件路徑
+            preferences_file: 偏好設定文件路徑，如果為 None 則使用工作空間路徑
         """
-        self.preferences_file = Path(preferences_file)
+        if preferences_file is None:
+            # 對於打包版本，使用工作空間路徑
+            if getattr(sys, 'frozen', False):
+                # 獲取工作空間路徑
+                workspace_path = os.getenv('PRODOCUX_WORKSPACE_PATH')
+                if not workspace_path:
+                    # 嘗試從啟動設定獲取
+                    from utils.desktop_manager import DesktopManager
+                    dm = DesktopManager()
+                    workspace_path = str(dm.workspace_dir)
+                self.preferences_file = Path(workspace_path) / "workflow_preferences.json"
+            else:
+                self.preferences_file = Path("workflow_preferences.json")
+        else:
+            self.preferences_file = Path(preferences_file)
         self.preferences_data = self._load_preferences()
     
     def _load_preferences(self) -> Dict[str, Any]:
@@ -169,7 +185,21 @@ def get_preferences_manager() -> WorkflowPreferencesManager:
     """獲取全域偏好設定管理器實例"""
     global _preferences_manager
     if _preferences_manager is None:
-        _preferences_manager = WorkflowPreferencesManager()
+        # 對於打包版本，嘗試獲取工作空間路徑
+        preferences_file = None
+        if getattr(sys, 'frozen', False):
+            workspace_path = os.getenv('PRODOCUX_WORKSPACE_PATH')
+            if not workspace_path:
+                # 嘗試從啟動設定獲取
+                try:
+                    from utils.desktop_manager import DesktopManager
+                    dm = DesktopManager()
+                    workspace_path = str(dm.workspace_dir)
+                except:
+                    pass
+            if workspace_path:
+                preferences_file = str(Path(workspace_path) / "workflow_preferences.json")
+        _preferences_manager = WorkflowPreferencesManager(preferences_file)
     return _preferences_manager
 
 

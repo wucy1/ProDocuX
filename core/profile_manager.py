@@ -29,8 +29,24 @@ class ProfileManager:
             self.profiles_dir = self.workspace_profiles_dir
         else:
             # 回退到預設目錄
-            self.profiles_dir = Path("profiles")
-            self.workspace_profiles_dir = self.profiles_dir
+            if getattr(sys, 'frozen', False):
+                # 對於打包版本，嘗試獲取工作空間路徑
+                workspace_path = os.getenv('PRODOCUX_WORKSPACE_PATH')
+                if not workspace_path:
+                    # 嘗試從啟動設定獲取
+                    try:
+                        from utils.desktop_manager import DesktopManager
+                        dm = DesktopManager()
+                        workspace_path = str(dm.workspace_dir)
+                    except:
+                        pass
+                if workspace_path:
+                    self.workspace_profiles_dir = Path(workspace_path) / "profiles"
+                else:
+                    self.workspace_profiles_dir = Path("profiles")
+            else:
+                self.workspace_profiles_dir = Path("profiles")
+            self.profiles_dir = self.workspace_profiles_dir
         
         # 對於打包版本，不應該在 dist 目錄創建 profiles
         if not getattr(sys, 'frozen', False):
