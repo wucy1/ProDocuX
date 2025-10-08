@@ -39,19 +39,31 @@ class ProDocuX {
         const urlLang = urlParams.get('lang');
         if (urlLang && ['zh_TW', 'en'].includes(urlLang)) {
             this.currentLanguage = urlLang;
-            window.currentLang = urlLang; // 更新全域變數
-        } else {
-            // 如果URL沒有語言參數，嘗試從session獲取
-            try {
-                const response = await fetch('/api/language');
-                const data = await response.json();
-                if (data.language && ['zh_TW', 'en'].includes(data.language)) {
-                    this.currentLanguage = data.language;
-                    window.currentLang = data.language; // 更新全域變數
-                }
-            } catch (error) {
-                console.log('無法從session獲取語言，使用預設語言:', this.currentLanguage);
+            window.currentLang = urlLang;
+            return;
+        }
+        
+        // 如果URL沒有語言參數，嘗試從session獲取
+        try {
+            const response = await fetch('/api/language');
+            const data = await response.json();
+            if (data.language && ['zh_TW', 'en'].includes(data.language)) {
+                this.currentLanguage = data.language;
+                window.currentLang = data.language;
+                return;
             }
+        } catch (error) {
+            console.log('無法從session獲取語言，使用預設語言');
+        }
+        
+        // 如果都沒有，檢查瀏覽器語言
+        const browserLang = navigator.language || navigator.userLanguage;
+        if (browserLang.startsWith('zh')) {
+            this.currentLanguage = 'zh_TW';
+            window.currentLang = 'zh_TW';
+        } else {
+            this.currentLanguage = 'en';
+            window.currentLang = 'en';
         }
     }
 

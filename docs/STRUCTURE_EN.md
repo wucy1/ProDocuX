@@ -189,3 +189,4 @@ ProDocuX/
 ---
 
 **Note**: This structure is designed for GitHub release, with development temporary files and sensitive information removed.
+

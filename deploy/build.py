@@ -19,7 +19,7 @@ def clean_build_dirs():
     for dir_name in dirs_to_clean:
         if Path(dir_name).exists():
             shutil.rmtree(dir_name)
-            print(f"✅ 已清理 {dir_name} 目錄")
+            print(f"已清理 {dir_name} 目錄")
 
 def create_spec_file():
     """創建PyInstaller規格檔案"""
@@ -34,11 +34,12 @@ a = Analysis(
     datas=[
         ('web/templates', 'web/templates'),
         ('web/static', 'web/static'),
-        ('prompts', 'prompts'),
         ('profiles', 'profiles'),
         ('templates', 'templates'),
         ('utils', 'utils'),
         ('core', 'core'),
+        ('config', 'config'),
+        ('locale', 'locale'),
     ],
     hiddenimports=[
         'flask',
@@ -90,26 +91,33 @@ pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
     with open('ProDocuX.spec', 'w', encoding='utf-8') as f:
         f.write(spec_content)
     
-    print("✅ 已創建 PyInstaller 規格檔案")
+    print("已創建 PyInstaller 規格檔案")
 
 def build_executable():
     """建構可執行檔案"""
     try:
-        print("🔨 開始建構可執行檔案...")
+        print("開始建構可執行檔案...")
         
         # 使用PyInstaller建構
+        # 獲取圖標檔案的絕對路徑
+        icon_path = os.path.join(os.path.dirname(__file__), 'icon.ico')
+        print(f"圖標路徑: {icon_path}")
+        print(f"圖標檔案存在: {os.path.exists(icon_path)}")
+        
         cmd = [
             sys.executable, '-m', 'PyInstaller',
             '--onefile',
             '--windowed',
             '--name', 'ProDocuX',
+            '--icon', icon_path,
             '--add-data', 'web/templates;web/templates',
             '--add-data', 'web/static;web/static',
-            '--add-data', 'prompts;prompts',
             '--add-data', 'profiles;profiles',
             '--add-data', 'templates;templates',
             '--add-data', 'utils;utils',
             '--add-data', 'core;core',
+            '--add-data', 'config;config',
+            '--add-data', 'locale;locale',
             '--hidden-import', 'flask',
             '--hidden-import', 'openai',
             '--hidden-import', 'pdfplumber',
@@ -129,14 +137,14 @@ def build_executable():
         result = subprocess.run(cmd, capture_output=True, text=True)
         
         if result.returncode == 0:
-            print("✅ 可執行檔案建構成功")
+            print("可執行檔案建構成功")
             return True
         else:
-            print(f"❌ 建構失敗: {result.stderr}")
+            print(f"建構失敗: {result.stderr}")
             return False
             
     except Exception as e:
-        print(f"❌ 建構過程發生錯誤: {e}")
+        print(f"建構過程發生錯誤: {e}")
         return False
 
 def create_installer_script():
@@ -234,7 +242,7 @@ echo
         # 設定執行權限
         os.chmod('install.sh', 0o755)
     
-    print("✅ 已創建安裝腳本")
+    print("已創建安裝腳本")
 
 def create_release_package():
     """創建發布套件"""
@@ -247,7 +255,7 @@ def create_release_package():
     
     if exe_path.exists():
         shutil.copy2(exe_path, release_dir / exe_name)
-        print(f"✅ 已複製可執行檔案: {exe_name}")
+        print(f"已複製可執行檔案: {exe_name}")
     
     # 複製必要檔案
     files_to_copy = [
@@ -260,7 +268,7 @@ def create_release_package():
     for file_name in files_to_copy:
         if Path(file_name).exists():
             shutil.copy2(file_name, release_dir / file_name)
-            print(f"✅ 已複製檔案: {file_name}")
+            print(f"已複製檔案: {file_name}")
     
     # 創建使用說明
     usage_content = '''# ProDocuX 使用說明
@@ -297,12 +305,12 @@ def create_release_package():
     with open(release_dir / '使用說明.txt', 'w', encoding='utf-8') as f:
         f.write(usage_content)
     
-    print("✅ 已創建發布套件")
+    print("已創建發布套件")
 
 def main():
     """主函數"""
     print("=" * 60)
-    print("🔨 ProDocuX 打包工具")
+    print("ProDocuX 打包工具")
     print("=" * 60)
     
     # 清理建構目錄
@@ -315,10 +323,10 @@ def main():
     if build_executable():
         # 創建發布套件
         create_release_package()
-        print("\n🎉 打包完成！")
-        print("📁 發布檔案位於 release/ 目錄")
+        print("\n打包完成！")
+        print("發布檔案位於 release/ 目錄")
     else:
-        print("\n❌ 打包失敗")
+        print("\n打包失敗")
         sys.exit(1)
 
 if __name__ == "__main__":

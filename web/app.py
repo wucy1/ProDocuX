@@ -16,34 +16,7 @@ from werkzeug.utils import secure_filename
 import uuid
 from typing import Optional
 
-def save_template_file(template_file):
-    """保存模板檔案"""
-    try:
-        # 獲取模板目錄
-        settings_manager, _, _, _ = get_components()
-        template_dir = settings_manager.get_directory_paths()['template']
-        template_dir.mkdir(parents=True, exist_ok=True)
-        
-        # 使用原始文件名
-        filename = template_file.filename
-        file_path = template_dir / filename
-        
-        # 如果文件已存在，添加時間戳
-        if file_path.exists():
-            name_part = file_path.stem
-            ext_part = file_path.suffix
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"{name_part}_{timestamp}{ext_part}"
-            file_path = template_dir / filename
-            logger.info(f"File already exists, using new name: {filename}")
-        
-        # 保存檔案
-        template_file.save(str(file_path))
-        
-        return filename  # 返回文件名而不是完整路徑
-    except Exception as e:
-        logger.error(f"Failed to save template file: {e}")
-        return None
+
 
 
 
@@ -189,7 +162,17 @@ def create_app():
                 
                 settings_manager = SettingsManager(workspace_path=workspace_path)
                 file_handler = FileHandler()
-                profile_manager = ProfileManager()
+                
+                # 獲取工作空間的 profiles 目錄
+                workspace_profiles_dir = None
+                if workspace_path:
+                    workspace_profiles_dir = Path(workspace_path) / "profiles"
+                else:
+                    # 如果沒有工作空間路徑，使用設定管理器的目錄路徑
+                    dir_paths = settings_manager.get_directory_paths()
+                    workspace_profiles_dir = dir_paths.get('profiles')
+                
+                profile_manager = ProfileManager(workspace_profiles_dir=workspace_profiles_dir)
                 cost_calculator = CostCalculator()
                 
                 # 確保目錄存在
@@ -201,6 +184,35 @@ def create_app():
                 raise
         
         return settings_manager, file_handler, profile_manager, cost_calculator
+
+    def save_template_file(template_file):
+        """保存模板檔案"""
+        try:
+            # 獲取模板目錄
+            settings_manager, _, _, _ = get_components()
+            template_dir = settings_manager.get_directory_paths()['template']
+            template_dir.mkdir(parents=True, exist_ok=True)
+            
+            # 使用原始文件名
+            filename = template_file.filename
+            file_path = template_dir / filename
+            
+            # 如果文件已存在，添加時間戳
+            if file_path.exists():
+                name_part = file_path.stem
+                ext_part = file_path.suffix
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                filename = f"{name_part}_{timestamp}{ext_part}"
+                file_path = template_dir / filename
+                logger.info(f"File already exists, using new name: {filename}")
+            
+            # 保存檔案
+            template_file.save(str(file_path))
+            
+            return filename  # 返回文件名而不是完整路徑
+        except Exception as e:
+            logger.error(f"Failed to save template file: {e}")
+            return None
     
     @app.route('/')
     def index():
@@ -1533,21 +1545,28 @@ CONFIDENCE_THRESHOLD=0.7
     def upload_template():
         """上傳模板檔案"""
         try:
+            logger.info(f"收到模板上傳請求，檔案數量: {len(request.files)}")
             if 'template' not in request.files:
+                logger.error("沒有上傳檔案")
                 return jsonify({'error': '沒有上傳檔案'}), 400
             
             file = request.files['template']
             if file.filename == '':
+                logger.error("沒有選擇檔案")
                 return jsonify({'error': '沒有選擇檔案'}), 400
+            
+            logger.info(f"上傳檔案: {file.filename}")
             
             # 檢查檔案格式
             if not file.filename.lower().endswith(('.docx', '.doc', '.pdf')):
+                logger.error(f"不支援的檔案格式: {file.filename}")
                 return jsonify({'error': '只支援 DOCX、DOC 與 PDF 格式'}), 400
             
             # 保存檔案到模板目錄
             settings_manager, _, _, _ = get_components()
             dir_paths = settings_manager.get_directory_paths()
             template_dir = dir_paths['template']
+            logger.info(f"模板目錄: {template_dir}")
             template_dir.mkdir(parents=True, exist_ok=True)
             
             # 處理重複檔案名，添加時間戳
@@ -1563,6 +1582,7 @@ CONFIDENCE_THRESHOLD=0.7
                 filename = file.filename
             
             file.save(str(file_path))
+            logger.info(f"檔案已保存到: {file_path}")
 
             # 預處理：占位符/標籤分析，輸出 meta 與 labels
             try:
@@ -1714,7 +1734,7 @@ CONFIDENCE_THRESHOLD=0.7
             return jsonify({
                 'success': True,
                 'message': '模板上傳成功',
-                'filename': file.filename,
+                'filename': filename,  # 使用實際保存的檔案名
                 'path': str(file_path),
                 'analysis': analysis
             })

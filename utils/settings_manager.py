@@ -73,6 +73,9 @@ class SettingsManager:
         self.default_settings = self._get_default_settings()
         self.settings = self._load_settings()
         
+        # 確保所有目錄存在
+        self.ensure_directories()
+        
         logger.info("設定管理器已初始化")
     
     def _load_startup_config_from_multiple_locations(self, workspace_path: str = None):
@@ -267,6 +270,9 @@ class SettingsManager:
     def _save_settings(self, settings: Dict[str, Any]) -> bool:
         """保存設定"""
         try:
+            # 確保目錄存在
+            self.config_file.parent.mkdir(parents=True, exist_ok=True)
+            
             # 添加時間戳
             settings["last_updated"] = datetime.now().isoformat()
             

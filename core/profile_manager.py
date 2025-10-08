@@ -6,6 +6,7 @@ Profile管理器
 """
 
 import os
+import sys
 import yaml
 import json
 import logging
@@ -19,21 +20,35 @@ logger = logging.getLogger(__name__)
 class ProfileManager:
     """Profile管理器"""
     
-    def __init__(self):
+    def __init__(self, workspace_profiles_dir=None):
         """初始化Profile管理器"""
-        self.profiles_dir = Path("profiles")
-        self.profiles_dir.mkdir(exist_ok=True)
+        # 工作空間的 profiles 目錄（用於 AI 生成的 profiles）
+        if workspace_profiles_dir:
+            self.workspace_profiles_dir = Path(workspace_profiles_dir)
+            # 如果沒有提供工作空間路徑，使用預設的 profiles 目錄
+            self.profiles_dir = self.workspace_profiles_dir
+        else:
+            # 回退到預設目錄
+            self.profiles_dir = Path("profiles")
+            self.workspace_profiles_dir = self.profiles_dir
+        
+        # 對於打包版本，不應該在 dist 目錄創建 profiles
+        if not getattr(sys, 'frozen', False):
+            self.profiles_dir.mkdir(exist_ok=True)
         
         # 創建子目錄結構
         self.base_profiles_dir = self.profiles_dir / "base"
         self.brand_profiles_dir = self.profiles_dir / "brand"
         self.work_profiles_dir = self.profiles_dir / "work"
         
-        for dir_path in [self.base_profiles_dir, self.brand_profiles_dir, self.work_profiles_dir]:
-            dir_path.mkdir(exist_ok=True)
+        # 對於打包版本，不應該在 dist 目錄創建子目錄
+        if not getattr(sys, 'frozen', False):
+            for dir_path in [self.base_profiles_dir, self.brand_profiles_dir, self.work_profiles_dir]:
+                dir_path.mkdir(exist_ok=True)
         
-        # 載入預設Profile
-        self._create_default_profile()
+        # 載入預設Profile（僅在非打包版本中）
+        if not getattr(sys, 'frozen', False):
+            self._create_default_profile()
         logger.info("Profile管理器已初始化（支援分層架構）")
     
     def get_default_profile(self) -> Dict[str, Any]:
@@ -430,9 +445,9 @@ class ProfileManager:
     def save_ai_generated_profile(self, work_id: str, profile: Dict[str, Any]) -> bool:
         """保存AI生成的Profile"""
         try:
-            # 創建AI生成的Profile目錄
-            ai_profiles_dir = self.profiles_dir / "ai_generated"
-            ai_profiles_dir.mkdir(exist_ok=True)
+            # 創建AI生成的Profile目錄（在工作空間中）
+            ai_profiles_dir = self.workspace_profiles_dir / "ai_generated"
+            ai_profiles_dir.mkdir(parents=True, exist_ok=True)
             
             # 保存Profile
             profile_path = ai_profiles_dir / f"work_{work_id}_profile.json"
@@ -457,7 +472,7 @@ class ProfileManager:
     def load_ai_generated_profile(self, work_id: str) -> Optional[Dict[str, Any]]:
         """載入AI生成的Profile"""
         try:
-            ai_profiles_dir = self.profiles_dir / "ai_generated"
+            ai_profiles_dir = self.workspace_profiles_dir / "ai_generated"
             profile_path = ai_profiles_dir / f"work_{work_id}_profile.json"
             
             if not profile_path.exists():
@@ -497,7 +512,7 @@ class ProfileManager:
     def get_ai_generated_profiles(self) -> List[Dict[str, Any]]:
         """獲取所有AI生成的Profile列表"""
         try:
-            ai_profiles_dir = self.profiles_dir / "ai_generated"
+            ai_profiles_dir = self.workspace_profiles_dir / "ai_generated"
             
             if not ai_profiles_dir.exists():
                 return []
@@ -527,7 +542,7 @@ class ProfileManager:
     def delete_ai_generated_profile(self, work_id: str) -> bool:
         """刪除AI生成的Profile"""
         try:
-            ai_profiles_dir = self.profiles_dir / "ai_generated"
+            ai_profiles_dir = self.workspace_profiles_dir / "ai_generated"
             profile_path = ai_profiles_dir / f"work_{work_id}_profile.json"
             
             if profile_path.exists():
