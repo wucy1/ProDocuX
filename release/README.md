@@ -13,13 +13,28 @@
 
 ProDocuX is an AI-powered intelligent document conversion platform that transforms various document formats (PDF, Word, etc.) into structured documents. It supports multiple AI models including OpenAI, Claude, Gemini, and Grok, allowing you to choose the most suitable AI assistant for your needs.
 
+## 🎯 Core Concept: Workflow-Based Processing
+
+**ProDocuX's core design philosophy is workflow-based**. Users must first create a work before they can start processing documents. Each work contains:
+
+1. **Work Basic Information** - Name, description, type, brand
+2. **Profile** - Document extraction configuration (AI-generated)
+3. **Prompt** - Document processing instructions (AI-generated)  
+4. **Template** - Output format template (user-uploaded)
+
+This workflow approach ensures:
+- **Consistent Processing**: Each work maintains its own configuration
+- **Continuous Learning**: Each work learns and optimizes independently
+- **Scalable Operations**: Multiple works for different document types
+- **Quality Control**: Dedicated configurations for specific use cases
+
 ## 📦 RC1 Release - Quick Start
 
 ### Installation
 1. **Download**: `ProDocuX.exe` (approximately 100MB)
 2. **Run**: Double-click the executable file
 3. **Setup**: Follow the browser-based setup wizard
-4. **Start**: Begin processing your documents
+4. **Create Workflow**: **IMPORTANT** - Create your first work before processing documents
 
 ### System Requirements
 - Windows 10/11 (64-bit)
@@ -33,6 +48,14 @@ ProDocuX is an AI-powered intelligent document conversion platform that transfor
 4. Enter your API key
 5. Choose workspace location
 6. Create desktop shortcuts (optional)
+
+### Creating Your First Workflow
+1. **Fill Basic Information**: Work name, description, document type
+2. **Upload Template**: Your output format template (Word, Excel, etc.)
+3. **Generate Profile**: Use AI to create document extraction configuration
+4. **Generate Prompt**: Use AI to create document processing instructions
+5. **Create Work**: Complete the workflow setup
+6. **Start Processing**: Upload documents and begin processing
 
 > **RC1 Status**: This is a Release Candidate version. Please report any issues via [GitHub Issues](https://github.com/wucy1/ProDocuX/issues).
 

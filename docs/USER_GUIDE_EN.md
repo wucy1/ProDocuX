@@ -50,31 +50,76 @@
 - If you encounter issues, please report at [GitHub Issues](https://github.com/wucy1/ProDocuX/issues)
 - Recommend regular backup of important files in workspace directory
 
-### 2. Using Web Interface
+## 🎯 Core Concept: Workflow
 
-1. **Open Browser**
-   - Visit `http://localhost:5000`
-   - Or click the URL displayed after program startup
+**ProDocuX's core design philosophy is workflow-based**. Users must first create a work before they can start processing documents. Each work contains:
 
-2. **Upload Files**
-   - Click "Choose Files" button
-   - Select PDF or Word files to process
-   - Supports batch upload
+1. **Work Basic Information** - Name, description, type, brand
+2. **Profile** - Document extraction configuration (AI-generated)
+3. **Prompt** - Document processing instructions (AI-generated)
+4. **Template** - Output format template (user-uploaded)
 
-3. **Select Template**
-   - Choose output template from dropdown menu
-   - Or use default template
+### 2. Create Your First Workflow
 
-4. **Start Processing**
-   - Click "Start Processing" button
-   - Wait for AI processing to complete
-   - Download processing results
+#### Step 1: Fill Basic Information
+1. Click "New Work" button
+2. Fill in work information:
+   - **Work Name**: e.g., "3M Product PIF Conversion"
+   - **Work Description**: Detailed description of the work's purpose and scope
+   - **Document Type**: Select document type (PIF, MSDS, Contract, etc.)
+   - **Brand/Company**: Enter brand name (optional)
 
-### 3. Using Desktop Shortcuts
+#### Step 2: Upload Output Template
+1. Click "Choose Template File"
+2. Upload your output format template (Word, Excel, etc.)
+3. System will analyze template structure
 
-1. **Access Files**
-   - Double-click "ProDocuX Input Files" shortcut
-   - Place files to process in the folder
+#### Step 3: Generate Profile (Document Extraction Configuration)
+1. Click "Generate Profile Prompt"
+2. Copy the generated prompt to your AI tool (ChatGPT, Claude, etc.)
+3. Paste the AI-returned JSON configuration back into the system
+4. Click "Validate Profile" to confirm correct format
+
+#### Step 4: Generate Prompt (Document Processing Instructions)
+1. Click "Generate Prompt Template"
+2. Copy the generated prompt to your AI tool
+3. Paste the AI-returned prompt back into the system
+4. Click "Validate Prompt" to confirm correct content
+
+#### Step 5: Complete Work Creation
+1. Click "Create Work"
+2. System will automatically select the newly created work
+3. Start using this work to process documents
+
+### 3. Using Workflow to Process Documents
+
+#### Select Work
+1. Choose the work to use from "Select Work" dropdown
+2. System will display work information and configuration
+
+#### Upload Documents
+1. Click "Choose Files" button
+2. Select PDF or Word files to process
+3. Supports batch upload
+
+#### Start Processing
+1. Click "Start Processing" button
+2. Wait for AI processing to complete
+3. Download processing results
+
+### 4. Workflow Management
+
+#### View Work History
+- Each work records processing count and learning count
+- Can view work creation time and last usage time
+
+#### Continuous Learning Optimization
+- Each work learns and optimizes independently
+- System automatically improves processing effectiveness based on user corrections
+
+#### Work Switching
+- Can switch between different works at any time
+- Each work has independent configuration and history records
 
 2. **View Results**
    - Double-click "ProDocuX Output Results" shortcut
