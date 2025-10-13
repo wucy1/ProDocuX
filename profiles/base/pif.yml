@@ -1,0 +1,95 @@
+name: pif
+description: PIF文檔通用提取Profile
+version: 1.0.0
+profile_type: base
+use_page_extraction: true
+max_pages: 20
+
+extraction_rules:
+  basic_info:
+    patterns:
+      - "產品名稱[:：]\\s*(.+)"
+      - "Product Name[:：]\\s*(.+)"
+      - "產品類別[:：]\\s*(.+)"
+      - "Product Category[:：]\\s*(.+)"
+      - "產品劑型[:：]\\s*(.+)"
+      - "Product Form[:：]\\s*(.+)"
+      - "用途[:：]\\s*(.+)"
+      - "Intended Use[:：]\\s*(.+)"
+  
+  manufacturer_info:
+    patterns:
+      - "製造業者[:：]\\s*(.+)"
+      - "Manufacturer[:：]\\s*(.+)"
+      - "製造業者地址[:：]\\s*(.+)"
+      - "Manufacturer Address[:：]\\s*(.+)"
+      - "製造業者電話[:：]\\s*(.+)"
+      - "Manufacturer Phone[:：]\\s*(.+)"
+      - "輸入業者[:：]\\s*(.+)"
+      - "Importer[:：]\\s*(.+)"
+  
+  ingredients:
+    patterns:
+      - "成分[:：]\\s*(.+)"
+      - "Ingredients[:：]\\s*(.+)"
+      - "INCI名稱[:：]\\s*(.+)"
+      - "INCI Name[:：]\\s*(.+)"
+      - "CAS號碼[:：]\\s*(.+)"
+      - "CAS Number[:：]\\s*(.+)"
+      - "含量[:：]\\s*(.+)"
+      - "Concentration[:：]\\s*(.+)"
+  
+  usage_info:
+    patterns:
+      - "使用部位[:：]\\s*(.+)"
+      - "Application Site[:：]\\s*(.+)"
+      - "使用量[:：]\\s*(.+)"
+      - "Dosage[:：]\\s*(.+)"
+      - "使用頻率[:：]\\s*(.+)"
+      - "Frequency[:：]\\s*(.+)"
+      - "適用對象[:：]\\s*(.+)"
+      - "Target Users[:：]\\s*(.+)"
+      - "注意事項[:：]\\s*(.+)"
+      - "Precautions[:：]\\s*(.+)"
+  
+  safety_info:
+    patterns:
+      - "安全評估[:：]\\s*(.+)"
+      - "Safety Assessment[:：]\\s*(.+)"
+      - "毒理學資料[:：]\\s*(.+)"
+      - "Toxicological Data[:：]\\s*(.+)"
+      - "過敏原[:：]\\s*(.+)"
+      - "Allergens[:：]\\s*(.+)"
+      - "禁忌症[:：]\\s*(.+)"
+      - "Contraindications[:：]\\s*(.+)"
+
+post_process:
+  clean_text: true
+  normalize_format: true
+  validate_data: true
+  extract_tables: true
+  extract_lists: true
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

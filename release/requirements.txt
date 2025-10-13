@@ -1,0 +1,39 @@
+# ProDocuX 依賴套件
+
+# Web框架
+Flask==2.3.3
+Werkzeug==2.3.7
+
+# AI和機器學習
+openai==1.3.0
+anthropic>=0.7.0
+google-generativeai>=0.3.0
+
+# 文檔處理
+pdfplumber==0.9.0
+PyPDF2==3.0.1
+python-docx==0.8.11
+docxtpl==0.16.7
+docx2pdf==0.1.8
+
+# 資料處理
+PyYAML==6.0.1
+pydantic==2.4.2
+python-dotenv==1.0.0
+
+# 工具函數
+pathlib2==2.3.7
+typing-extensions==4.7.1
+
+# Windows 桌面快捷方式 (可選)
+# pywin32==306
+
+# 開發工具
+pytest==7.4.2
+pytest-cov==4.1.0
+black==23.7.0
+flake8==6.0.0
+
+# 打包工具
+PyInstaller==6.0.0
+auto-py-to-exe==2.40.0

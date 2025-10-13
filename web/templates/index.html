@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="app.title">ProDocuX - AI文檔智能轉換平台 RC1</title>
+    <link rel="stylesheet" href="/static/css/style.css?v=RC1">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- 標題區域 -->
+        <header class="hero">
+            <div class="hero-content">
+                <div class="header-controls">
+                    <div class="language-switcher">
+                        <button id="langBtn" class="lang-btn">
+                            <i class="fas fa-globe"></i>
+                            <span data-i18n="language.switch">切換語言</span>
+                        </button>
+                        <div id="langDropdown" class="lang-dropdown">
+                            <a href="#" data-lang="zh_TW" data-i18n="language.zh_TW">繁體中文</a>
+                            <a href="#" data-lang="en" data-i18n="language.en">English</a>
+                        </div>
+                    </div>
+                </div>
+                <h1 class="logo">
+                    <img src="/static/images/logo.png" alt="ProDocuX Logo" class="logo-image">
+                    <span class="logo-text">ProDocuX</span>
+                </h1>
+                <p class="tagline" data-i18n="app.tagline">AI驅動的智能文檔轉換平台</p>
+                <div class="features">
+                    <div class="feature">
+                        <i class="fas fa-brain"></i>
+                        <span data-i18n="features.aiExtract">AI智能提取</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-file-alt"></i>
+                        <span data-i18n="features.multiFormat">多格式支援</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span data-i18n="features.autoLearn">自動學習</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-dollar-sign"></i>
+                        <span data-i18n="features.costOptimize">成本優化</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主要內容 -->
+        <main class="main-content">
+            <!-- 上傳區域 -->
+            <div class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3 data-i18n="upload.title">拖拽檔案到這裡</h3>
+                    <p data-i18n="upload.subtitle">支援 PDF, DOCX, DOC 格式，最大 50MB</p>
+                    <input type="file" id="fileInput" multiple accept=".pdf,.docx,.doc" style="display: none;">
+                    <div class="upload-actions">
+                        <button class="upload-btn" onclick="document.getElementById('fileInput').click()" data-i18n="upload.selectFile">
+                            選擇檔案
+                        </button>
+                        <button class="upload-btn btn-secondary" id="importFromInputBtn" data-i18n="upload.loadFromInput">
+                            從 input 載入
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 檔案列表 -->
+                <div class="file-list" id="fileList" style="display: none;">
+                    <div class="file-list-header">
+                        <h4 data-i18n="upload.fileList">已選擇的檔案</h4>
+                    </div>
+                    <div id="fileItems"></div>
+                </div>
+            </div>
+
+            <!-- 工作管理區域 -->
+            <div class="workflow-section">
+                <div class="workflow-header">
+                    <h3>
+                        <i class="fas fa-project-diagram"></i>
+                        <span data-i18n="workflow.title">工作流程管理</span>
+                    </h3>
+                    <button class="btn btn-primary" onclick="showCreateWorkModal()">
+                        <i class="fas fa-plus"></i>
+                        <span data-i18n="workflow.newWork">新建工作</span>
+                    </button>
+                </div>
+                
+                <div class="workflow-guide">
+                    <div class="guide-step">
+                        <span class="step-number">1</span>
+                        <span class="step-text" data-i18n="workflow.step1">創建工作流程，設定專用的配置、模板和提示詞</span>
+                    </div>
+                    <div class="guide-step">
+                        <span class="step-number">2</span>
+                        <span class="step-text" data-i18n="workflow.step2">選擇工作流程，系統自動載入預設設定</span>
+                    </div>
+                    <div class="guide-step">
+                        <span class="step-number">3</span>
+                        <span class="step-text" data-i18n="workflow.step3">上傳檔案並開始處理，可臨時調整設定</span>
+                    </div>
+                </div>
+                
+                <div class="workflow-controls">
+                    <div class="work-group">
+                        <label for="workSelect">
+                            <i class="fas fa-briefcase"></i>
+                            <span data-i18n="buttons.selectWork">選擇工作</span>
+                        </label>
+                        <select id="workSelect">
+                            <option value="" data-i18n="placeholders.selectOrCreateWork">請選擇或創建新工作...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="work-info" id="workInfo" style="display: none;">
+                        <div class="work-details">
+                            <div class="work-header">
+                                <h4 id="workNameDisplay" data-i18n="labels.workName">工作名稱</h4>
+                                <div class="work-actions">
+                                    <button class="btn btn-sm btn-secondary" onclick="editWork()" title="編輯工作">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteWork()" title="刪除工作">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- 版本標記 v1.1 - 如果看到這個註釋，說明新版本已載入 -->
+                            <p id="workDescriptionDisplay" data-i18n="labels.workDescription">工作描述</p>
+                            <div class="work-stats">
+                                <span class="stat">
+                                    <i class="fas fa-file"></i>
+                                    <span data-i18n="labels.processed">已處理</span>: <span id="processedCount">0</span> <span data-i18n="labels.documents">個文檔</span>
+                                </span>
+                                <!-- 學習功能開發中，暫時隱藏
+                                <span class="stat">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    <span data-i18n="labels.learningCount">學習次數</span>: <span id="learningCount">0</span> <span data-i18n="labels.times">次</span>
+                                </span>
+                                -->
+                                <span class="stat">
+                                    <i class="fas fa-calendar"></i>
+                                    <span data-i18n="labels.createdTime">創建時間</span>: <span id="createdDate">-</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 選項區域 -->
+            <div class="options-section">
+                <div class="options-grid">
+                    <!-- 第一行：固定配置信息（當前配置、當前模板、提示詞配置） -->
+                    <div class="option-group">
+                        <label>
+                            <i class="fas fa-cog"></i>
+                            <span data-i18n="settings.currentProfile">當前配置</span>
+                        </label>
+                        <div class="current-setting-display" id="currentProfileDisplay">
+                            <span class="setting-value" data-i18n="placeholders.selectWork">請先選擇工作</span>
+                        </div>
+                        <small class="help-text" data-i18n="settings.profileHelp">當前工作的專用配置，點擊"編輯工作"可調整</small>
+                    </div>
+                    
+                    <div class="option-group">
+                        <label>
+                            <i class="fas fa-file-alt"></i>
+                            <span data-i18n="settings.currentTemplate">當前模板</span>
+                        </label>
+                        <div class="current-setting-display" id="currentTemplateDisplay">
+                            <span class="setting-value" data-i18n="placeholders.selectWork">請先選擇工作</span>
+                        </div>
+                        <small class="help-text" data-i18n="settings.templateHelp">當前工作的專用模板，點擊"編輯工作"可調整</small>
+                    </div>
+                    
+                    <div class="option-group">
+                        <label>
+                            <i class="fas fa-comment-dots"></i>
+                            <span data-i18n="settings.currentPrompt">提示詞配置</span>
+                        </label>
+                        <div class="current-setting-display" id="currentPromptDisplay">
+                            <span class="setting-value" data-i18n="placeholders.selectWork">請先選擇工作</span>
+                        </div>
+                        <small class="help-text" data-i18n="settings.promptHelp">當前工作的專用提示詞，點擊"編輯工作"可調整</small>
+                    </div>
+                    
+                    <!-- 第二行：可調整的設置 -->
+                    <div class="option-group">
+                        <label for="formatSelect">
+                            <i class="fas fa-file-export"></i>
+                            <span data-i18n="labels.outputFormat">輸出格式</span>
+                        </label>
+                        <select id="formatSelect">
+                            <option value="docx" data-i18n="formats.word">Word文檔</option>
+                            <option value="json" data-i18n="formats.json">JSON格式</option>
+                            <option value="pdf" data-i18n="formats.pdf">PDF文檔</option>
+                        </select>
+                    </div>
+                    
+                    <div class="option-group">
+                        <label for="outputFolder">
+                            <i class="fas fa-folder-open"></i>
+                            <span data-i18n="labels.outputFolder">輸出資料夾</span>
+                        </label>
+                        <div class="folder-selector">
+                            <input type="text" id="outputFolder" placeholder="選擇輸出資料夾..." readonly data-i18n-placeholder="placeholders.selectOutputFolder">
+                            <button class="btn btn-secondary" onclick="selectOutputFolder()">
+                                <i class="fas fa-folder"></i>
+                                <span data-i18n="buttons.select">選擇</span>
+                            </button>
+                        </div>
+                        <small class="help-text" data-i18n="settings.outputFolderHelp">預設使用工作空間的 output 資料夾</small>
+                    </div>
+                    
+                    <!-- 第三行：AI模型配置 -->
+                    <div class="option-group">
+                        <label for="workflowAiProvider">
+                            <i class="fas fa-robot"></i>
+                            <span data-i18n="labels.aiProvider">AI提供者</span>
+                        </label>
+                        <select id="workflowAiProvider" onchange="updateWorkflowModelOptions()">
+                            <option value="" data-i18n="settings.useDefault">使用預設設定</option>
+                        </select>
+                        <small class="help-text" data-i18n="settings.aiProviderHelp">選擇AI提供者（留空使用預設設定）</small>
+                    </div>
+                    
+                    <div class="option-group">
+                        <label for="workflowAiModel">
+                            <i class="fas fa-brain"></i>
+                            <span data-i18n="settings.aiModel">AI模型</span>
+                        </label>
+                        <select id="workflowAiModel">
+                            <option value="" data-i18n="settings.useDefault">使用預設設定</option>
+                        </select>
+                        <small class="help-text" data-i18n="settings.aiModelHelp">選擇AI模型（留空使用預設設定）</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 處理按鈕 -->
+            <div class="process-section">
+                <button id="processBtn" class="process-btn" disabled>
+                    <i class="fas fa-play"></i>
+                    <span data-i18n="buttons.startProcess">開始處理</span>
+                </button>
+                <button id="estimateBtn" class="estimate-btn">
+                    <i class="fas fa-calculator"></i>
+                    <span data-i18n="buttons.costEstimate">估算成本</span>
+                </button>
+                <button id="savePreferencesBtn" class="preferences-btn" onclick="prodocux.saveCurrentPreferences()" title="保存當前設定為工作流程偏好">
+                    <i class="fas fa-save"></i>
+                    <span data-i18n="settings.savePreferences">保存偏好</span>
+                </button>
+            </div>
+
+            <!-- 進度顯示區域 -->
+            <div class="progress-container" id="progressContainer" style="display: none;">
+                <div class="progress-card">
+                    <div class="progress-header">
+                        <h3><i class="fas fa-cog fa-spin"></i> <span data-i18n="status.processingFiles">正在處理檔案...</span></h3>
+                        <div class="progress-stats">
+                            <span id="progressText" data-i18n="status.preparing">準備中...</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progressBar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <div class="progress-percentage" id="progressPercentage">0%</div>
+                    </div>
+                    <div class="progress-details" id="progressDetails">
+                        <div class="progress-log" id="progressLog">
+                            <div class="log-entry" data-i18n="status.initializing">正在初始化...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 成本估算面板 -->
+            <div class="cost-panel" id="costPanel" style="display: none;">
+                <div class="cost-panel-header">
+                    <h3><i class="fas fa-calculator"></i> <span data-i18n="labels.costEstimate">成本估算</span></h3>
+                    <button class="btn btn-sm btn-secondary" onclick="prodocux.refreshCostEstimate()">
+                        <i class="fas fa-sync-alt"></i> <span data-i18n="buttons.recalculate">重新計算</span>
+                    </button>
+                </div>
+                <div class="cost-panel-content">
+                    <div class="cost-summary">
+                        <div class="summary-item">
+                            <span class="summary-label" data-i18n="labels.fileCount">檔案數:</span>
+                            <span class="summary-value" id="totalFiles">0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label" data-i18n="labels.totalPages">總頁數:</span>
+                            <span class="summary-value" id="totalPages">0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label" data-i18n="labels.selectedPages">已選頁數:</span>
+                            <span class="summary-value" id="selectedPages">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="cost-breakdown">
+                        <div class="breakdown-item">
+                            <span class="breakdown-label" data-i18n="labels.estimatedInputTokens">預估輸入Tokens:</span>
+                            <span class="breakdown-value" id="inputTokens">-</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span class="breakdown-label" data-i18n="labels.estimatedOutputTokens">預估輸出Tokens:</span>
+                            <span class="breakdown-value" id="outputTokens">-</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span class="breakdown-label" data-i18n="labels.totalTokens">總Tokens:</span>
+                            <span class="breakdown-value" id="totalTokens">-</span>
+                        </div>
+                    </div>
+                    
+                    <div class="cost-estimate">
+                        <div class="estimate-item">
+                            <span class="estimate-label" data-i18n="labels.selectedPagesCost">選定頁面成本:</span>
+                            <span class="estimate-value" id="averageCost">-</span>
+                        </div>
+                        <div class="estimate-item">
+                            <span class="estimate-label" data-i18n="labels.allPagesCost">全部頁面成本:</span>
+                            <span class="estimate-value" id="maxCost">-</span>
+                        </div>
+                        <div class="estimate-item">
+                            <span class="estimate-label" data-i18n="labels.aiModel">AI模型:</span>
+                            <span class="estimate-value" id="aiModel">-</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 詳細說明區域 -->
+                    <div class="cost-details" id="costDetails">
+                        <!-- 詳細說明將由JavaScript動態生成 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 成本估算結果 -->
+            <div class="cost-estimate-container" id="costEstimateContainer" style="display: none;">
+                <div class="cost-estimate-card">
+                    <h4><i class="fas fa-calculator"></i> <span data-i18n="labels.costEstimateResult">成本估算結果</span></h4>
+                    <div class="cost-details">
+                        <div class="cost-item">
+                            <span class="cost-label" data-i18n="labels.estimatedTokenConsumption">預估Token消耗:</span>
+                            <span class="cost-value" id="estimatedTokens">-</span>
+                        </div>
+                        <div class="cost-item">
+                            <span class="cost-label" data-i18n="labels.estimatedCost">預估成本:</span>
+                            <span class="cost-value" id="estimatedCost">-</span>
+                        </div>
+                        <div class="cost-item">
+                            <span class="cost-label" data-i18n="labels.processingTime">處理時間:</span>
+                            <span class="cost-value" id="estimatedTime">-</span>
+                        </div>
+                        <div class="cost-item">
+                            <span class="cost-label" data-i18n="labels.fileSize">檔案大小:</span>
+                            <span class="cost-value" id="fileSize">-</span>
+                        </div>
+                        <div class="cost-item">
+                            <span class="cost-label">AI模型:</span>
+                            <span class="cost-value" id="aiModel">-</span>
+                        </div>
+                        <div class="cost-item">
+                            <span class="cost-label" data-i18n="labels.profileFile">配置檔案:</span>
+                            <span class="cost-value" id="profileName">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 進度條 -->
+            <div class="progress-container" id="progressContainer" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText" data-i18n="status.processing">處理中...</div>
+            </div>
+
+            <!-- 結果區域 -->
+            <div class="results-section" id="resultsSection" style="display: none;">
+                <h3>
+                    <i class="fas fa-check-circle"></i>
+                    <span data-i18n="labels.processingResult">處理結果</span>
+                </h3>
+                <div class="result-preview" id="resultPreview"></div>
+                <div class="result-actions">
+                    <button id="downloadBtn" class="download-btn">
+                        <i class="fas fa-download"></i>
+                        <span data-i18n="buttons.downloadResult">下載結果</span>
+                    </button>
+                    <!-- 學習功能暫時停用 -->
+                </div>
+            </div>
+
+            <!-- 資料夾管理區域 -->
+            <div class="folder-section">
+                <div class="folder-header">
+                    <h3>
+                        <i class="fas fa-folder"></i>
+                        <span data-i18n="labels.folderManagement">資料夾管理</span>
+                    </h3>
+                    <button class="btn btn-secondary" onclick="showWorkspaceInfo()">
+                        <i class="fas fa-info-circle"></i>
+                        <span data-i18n="labels.workspaceInfo">工作空間資訊</span>
+                    </button>
+                </div>
+                <div class="folder-actions">
+                    <button class="folder-btn" onclick="openFolder('input')">
+                        <i class="fas fa-upload"></i>
+                        <span data-i18n="labels.inputFolder">輸入資料夾</span>
+                    </button>
+                    <button class="folder-btn" onclick="openFolder('output')">
+                        <i class="fas fa-download"></i>
+                        <span data-i18n="labels.outputFolder">輸出資料夾</span>
+                    </button>
+                    <button class="folder-btn" onclick="openFolder('template')">
+                        <i class="fas fa-file-alt"></i>
+                        <span data-i18n="labels.templateFolder">模板資料夾</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 成本估算區域 -->
+            <div class="cost-section" id="costSection" style="display: none;">
+                <h3>
+                    <i class="fas fa-calculator"></i>
+                    <span data-i18n="labels.costEstimate">成本估算</span>
+                </h3>
+                <div class="cost-info" id="costInfo"></div>
+            </div>
+        </main>
+
+    </div>
+
+    <!-- 版本選擇模態框 -->
+    <div id="versionSelectionModal" class="version-selection-modal">
+        <div class="version-selection-content">
+            <div class="modal-header">
+                <h5 id="versionModalTitle" data-i18n="labels.selectVersion">選擇版本</h5>
+                <button type="button" class="close" onclick="closeVersionSelection()">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="versionList">
+                    <!-- 版本列表將在這裡動態生成 -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeVersionSelection()" data-i18n="buttons.cancel">取消</button>
+                <button type="button" class="btn btn-primary" onclick="applyVersionSelection()" data-i18n="buttons.applySelection">應用選擇</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 創建工作模態框 - 簡化版 -->
+    <div class="modal" id="createWorkModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 data-i18n="labels.createNewWork">創建新的文檔處理工作</h3>
+                <button class="close-btn" onclick="closeCreateWorkModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="createWorkForm">
+                    <!-- 基本資訊 -->
+                    <div class="form-group">
+                        <label for="workName">
+                            <i class="fas fa-tag"></i>
+                            <span data-i18n="createWork.workName">工作名稱</span> *
+                        </label>
+                        <input type="text" id="workName" placeholder="" required data-i18n-placeholder="createWork.workNamePlaceholder">
+                        <small class="help-text" data-i18n="createWork.workNameHelp">建議使用描述性的名稱，如：品牌+文檔類型</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="workDescription">
+                            <i class="fas fa-align-left"></i>
+                            <span data-i18n="createWork.workDescription">工作描述</span> *
+                        </label>
+                        <textarea id="workDescription" placeholder="" required rows="3" data-i18n-placeholder="createWork.workDescriptionPlaceholder"></textarea>
+                        <small class="help-text" data-i18n="createWork.workDescriptionHelp">詳細描述有助於AI生成更準確的Profile</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="workType">
+                            <i class="fas fa-cog"></i>
+                            <span data-i18n="createWork.documentType">文檔類型</span>
+                        </label>
+                        <select id="workType">
+                            <option value="pif" data-i18n="documentTypes.pif">PIF文檔（產品資訊檔案）</option>
+                            <option value="msds" data-i18n="documentTypes.msds">MSDS文檔（材料安全數據表）</option>
+                            <option value="contract" data-i18n="documentTypes.contract">合約文檔</option>
+                            <option value="invoice" data-i18n="documentTypes.invoice">發票文檔</option>
+                            <option value="report" data-i18n="documentTypes.report">報告文檔</option>
+                            <option value="certificate" data-i18n="documentTypes.certificate">證書文檔</option>
+                            <option value="manual" data-i18n="documentTypes.manual">手冊文檔</option>
+                            <option value="specification" data-i18n="documentTypes.specification">規格文檔</option>
+                            <option value="policy" data-i18n="documentTypes.policy">政策文檔</option>
+                            <option value="medical" data-i18n="documentTypes.medical">醫療文檔</option>
+                            <option value="financial" data-i18n="documentTypes.financial">財務文檔</option>
+                            <option value="legal" data-i18n="documentTypes.legal">法律文檔</option>
+                            <option value="technical" data-i18n="documentTypes.technical">技術文檔</option>
+                            <option value="marketing" data-i18n="documentTypes.marketing">行銷文檔</option>
+                            <option value="custom" data-i18n="documentTypes.custom">自定義</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="workBrand">
+                            <i class="fas fa-building"></i>
+                            <span data-i18n="createWork.brandCompany">品牌/公司</span> <span data-i18n="createWork.optional">（可選）</span>
+                        </label>
+                        <input type="text" id="workBrand" placeholder="" data-i18n-placeholder="createWork.brandPlaceholder">
+                        <small class="help-text" data-i18n="createWork.brandHelp">品牌資訊，用於識別和分類</small>
+                    </div>
+                    
+                    <!-- 模板上傳 -->
+                    <div class="form-group">
+                        <label for="templateFile">
+                            <i class="fas fa-file-alt"></i>
+                            <span data-i18n="createWork.outputTemplate">輸出模板</span> *
+                        </label>
+                        <div class="template-upload">
+                            <input type="file" id="templateFile" accept=".docx,.doc,.pdf" onchange="handleTemplateUpload(event)" class="file-input">
+                            <div class="template-preview" id="templatePreview"></div>
+                        </div>
+                        <small class="help-text" data-i18n="createWork.templateHelp">支援格式：Word (.docx, .doc)、PDF (.pdf)。請先上傳模板，AI會根據模板結構生成更準確的Profile和提示詞。</small>
+                    </div>
+                    
+                    <!-- 安全檢查設定 -->
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-shield-alt"></i>
+                            <span data-i18n="createWork.safetyCheck">安全檢查設定</span>
+                        </label>
+                        <div class="safety-check-options">
+                            <div class="safety-info">
+                                <p data-i18n="createWork.safetyInfo">為了確保生成的 Profile 和提示詞符合安全標準，系統會使用 AI 模型進行安全檢查。這會消耗少量 tokens。</p>
+                            </div>
+                            
+                            <div class="safety-models">
+                                <h4 data-i18n="createWork.selectSafetyModel">選擇要使用的 AI 模型進行安全檢查：</h4>
+                                <div class="model-options">
+                                    <div class="model-providers" id="safetyModelProviders">
+                                        <!-- 動態生成業者和模型選項 -->
+                                    </div>
+                                    <div class="pricing-info" id="safetyPricingInfo">
+                                        <div class="pricing-header" data-i18n="createWork.pricingInfo">定價信息</div>
+                                        <div id="pricingContent">
+                                            <p style="color: #666; text-align: center; padding: 20px;" data-i18n="createWork.selectModelForPricing">請選擇模型查看定價信息</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <small class="help-text" data-i18n="createWork.safetyModelHelp">請至少選擇一個模型進行安全檢查。您可以根據成本和需求自由選擇任何可用的模型。</small>
+                            </div>
+                            
+                            <div class="safety-results" id="safetyResults" style="display: none;">
+                                <h4 data-i18n="createWork.safetyResults">安全檢查結果：</h4>
+                                <div id="safetyResultContent"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- AI工具支援 -->
+                    <div class="ai-guidance">
+                        <div class="guidance-header">
+                            <h5 data-i18n="createWork.aiSupport">🤖 AI工具支援</h5>
+                            <p data-i18n="createWork.aiToolsDesc">您可以使用以下AI工具生成Profile和提示詞：</p>
+                            <div class="ai-upload-notice">
+                                <i class="fas fa-info-circle"></i>
+                                <strong data-i18n="createWork.importantNotice">重要提醒：</strong><span data-i18n="createWork.uploadNotice">請將模板檔案和Profile提示詞同時上傳到您的AI工具中，這樣AI能更好地理解模板結構並生成準確的Profile。</span>
+                            </div>
+                            <div class="ai-optimization-notice">
+                                <i class="fas fa-lightbulb"></i>
+                                <strong data-i18n="createWork.optimizationSuggestion">優化建議：</strong><span data-i18n="createWork.optimizationNotice">系統生成的Profile和提示詞為自動生成，請根據您的具體需求進行調整和優化，以獲得最佳效果。</span>
+                            </div>
+                        </div>
+                        
+                        <div class="tools-grid">
+                            <div class="tool-card">
+                                <div class="tool-icon">
+                                    <i class="fab fa-openai"></i>
+                                </div>
+                                <h5>ChatGPT</h5>
+                                <p>OpenAI GPT-4/GPT-3.5</p>
+                                <a href="https://chat.openai.com" target="_blank" class="tool-link">
+                                    <i class="fas fa-external-link-alt"></i> <span data-i18n="createWork.goToUse">前往使用</span>
+                                </a>
+                            </div>
+                            <div class="tool-card">
+                                <div class="tool-icon">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <h5>Claude</h5>
+                                <p>Anthropic Claude</p>
+                                <a href="https://claude.ai" target="_blank" class="tool-link">
+                                    <i class="fas fa-external-link-alt"></i> <span data-i18n="createWork.goToUse">前往使用</span>
+                                </a>
+                            </div>
+                            <div class="tool-card">
+                                <div class="tool-icon">
+                                    <i class="fab fa-google"></i>
+                                </div>
+                                <h5>Gemini</h5>
+                                <p>Google Gemini</p>
+                                <a href="https://gemini.google.com" target="_blank" class="tool-link">
+                                    <i class="fas fa-external-link-alt"></i> <span data-i18n="createWork.goToUse">前往使用</span>
+                                </a>
+                            </div>
+                            <div class="tool-card">
+                                <div class="tool-icon">
+                                    <i class="fab fa-microsoft"></i>
+                                </div>
+                                <h5>Copilot</h5>
+                                <p>Microsoft Copilot</p>
+                                <a href="https://copilot.microsoft.com" target="_blank" class="tool-link">
+                                    <i class="fas fa-external-link-alt"></i> <span data-i18n="createWork.goToUse">前往使用</span>
+                                </a>
+                            </div>
+                            
+                            <div class="tool-card">
+                                <div class="tool-icon">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <h5>Grok</h5>
+                                <p>xAI Grok</p>
+                                <a href="https://x.ai" target="_blank" class="tool-link">
+                                    <i class="fas fa-external-link-alt"></i> <span data-i18n="createWork.goToUse">前往使用</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Profile配置 -->
+                    <div class="form-group">
+                        <label for="profilePrompt">
+                            <i class="fas fa-magic"></i>
+                            <span data-i18n="createWork.profilePrompt">Profile提示詞</span>
+                        </label>
+                        <div class="prompt-generation">
+                            <button type="button" class="btn btn-secondary" onclick="generateProfilePrompt()">
+                                <i class="fas fa-magic"></i> <span data-i18n="createWork.generateProfilePrompt">生成Profile提示詞</span>
+                            </button>
+                        </div>
+                        <textarea id="profilePrompt" placeholder="" rows="6" data-i18n-placeholder="placeholders.generateProfilePrompt"></textarea>
+                        <small class="help-text" data-i18n="createWork.profilePromptHelp">AI會分析模板結構，生成更準確的Profile提示詞。複製此提示詞到AI工具中使用。</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="generatedProfile">
+                            <i class="fas fa-code"></i>
+                            <span data-i18n="createWork.generatedProfile">AI生成的Profile JSON</span> *
+                        </label>
+                        <textarea id="generatedProfile" placeholder="" required rows="6" data-i18n-placeholder="createWork.pasteProfileJson"></textarea>
+                        <button type="button" class="btn btn-secondary" onclick="validateProfile()" data-i18n="createWork.validateProfile">驗證Profile</button>
+                        <div id="profileValidation" class="validation-result"></div>
+                    </div>
+                    
+                    <!-- 提示詞配置 -->
+                    <div class="form-group">
+                        <label for="promptTemplate">
+                            <i class="fas fa-comment-dots"></i>
+                            <span data-i18n="createWork.promptTemplate">提示詞模板</span>
+                        </label>
+                        <div class="prompt-generation">
+                            <button type="button" class="btn btn-secondary" onclick="generatePromptTemplate()">
+                                <i class="fas fa-magic"></i> <span data-i18n="createWork.generatePromptTemplate">生成提示詞模板</span>
+                            </button>
+                        </div>
+                        <textarea id="promptTemplate" placeholder="" rows="6" data-i18n-placeholder="placeholders.generatePromptTemplate"></textarea>
+                        <small class="help-text" data-i18n="createWork.promptTemplateHelp">AI會根據Profile和模板結構生成更準確的提取提示詞。複製此提示詞到AI工具中使用。</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="generatedPrompt">
+                            <i class="fas fa-comment-dots"></i>
+                            <span data-i18n="createWork.generatedPrompt">AI生成的提示詞</span> *
+                        </label>
+                        <textarea id="generatedPrompt" placeholder="" required rows="6" data-i18n-placeholder="placeholders.pastePrompt"></textarea>
+                        <button type="button" class="btn btn-secondary" onclick="validatePrompt()" data-i18n="createWork.validatePrompt">驗證提示詞</button>
+                        <div id="promptValidation" class="validation-result"></div>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="createWork()">
+                    <i class="fas fa-check"></i> <span data-i18n="buttons.createWork">創建工作</span>
+                </button>
+                <button class="btn btn-secondary" onclick="closeCreateWorkModal()"><span data-i18n="buttons.cancel">取消</span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI工具支援模態框 -->
+    <div class="modal" id="aiToolsModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>AI工具支援</h3>
+                <button class="close-btn" onclick="closeAIToolsModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="ai-tools-support">
+                    <h4>支援的AI工具</h4>
+                    <p>您可以使用以下AI工具生成Profile和提示詞：</p>
+                    <div class="tools-grid">
+                        <div class="tool-card">
+                            <div class="tool-icon">
+                                <i class="fab fa-openai"></i>
+                            </div>
+                            <h5>ChatGPT</h5>
+                            <p>OpenAI GPT-4/GPT-3.5</p>
+                            <a href="https://chat.openai.com" target="_blank" class="tool-link">
+                                <i class="fas fa-external-link-alt"></i> 前往使用
+                            </a>
+                        </div>
+                        <div class="tool-card">
+                            <div class="tool-icon">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <h5>Claude</h5>
+                            <p>Anthropic Claude</p>
+                            <a href="https://claude.ai" target="_blank" class="tool-link">
+                                <i class="fas fa-external-link-alt"></i> 前往使用
+                            </a>
+                        </div>
+                        <div class="tool-card">
+                            <div class="tool-icon">
+                                <i class="fab fa-google"></i>
+                            </div>
+                            <h5>Gemini</h5>
+                            <p>Google Gemini</p>
+                            <a href="https://gemini.google.com" target="_blank" class="tool-link">
+                                <i class="fas fa-external-link-alt"></i> 前往使用
+                            </a>
+                        </div>
+                        <div class="tool-card">
+                            <div class="tool-icon">
+                                <i class="fab fa-microsoft"></i>
+                            </div>
+                            <h5>Copilot</h5>
+                            <p>Microsoft Copilot</p>
+                            <a href="https://copilot.microsoft.com" target="_blank" class="tool-link">
+                                <i class="fas fa-external-link-alt"></i> 前往使用
+                            </a>
+                        </div>
+                        
+                        <div class="tool-card">
+                            <div class="tool-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h5>Grok</h5>
+                            <p>xAI Grok</p>
+                            <a href="https://x.ai" target="_blank" class="tool-link">
+                                <i class="fas fa-external-link-alt"></i> 前往使用
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="usage-guide">
+                        <h5>使用指南</h5>
+                        <ol>
+                            <li>點擊「生成提示詞」按鈕獲取專用提示詞</li>
+                            <li>複製提示詞到您選擇的AI工具</li>
+                            <li>要求AI生成JSON格式的Profile或提取提示詞</li>
+                            <li>複製結果回到ProDocuX並驗證</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 編輯工作模態框 -->
+    <div class="modal" id="editWorkModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>編輯工作</h3>
+                <button class="close-btn" onclick="closeEditWorkModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="editWorkNameInput">
+                        <i class="fas fa-tag"></i>
+                        工作名稱
+                    </label>
+                    <input type="text" id="editWorkNameInput" placeholder="例如：3M產品PIF轉換" required>
+                    <small class="help-text">建議使用描述性的名稱，如：品牌+文檔類型</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editWorkDescriptionInput">
+                        <i class="fas fa-align-left"></i>
+                        工作描述
+                    </label>
+                    <textarea id="editWorkDescriptionInput" placeholder="描述這個工作的目的和範圍..." rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editWorkTypeSelect">
+                        <i class="fas fa-cog"></i>
+                        工作類型
+                    </label>
+                    <select id="editWorkTypeSelect">
+                        <option value="">請選擇工作類型</option>
+                        <option value="pif">PIF文檔轉換（產品資訊檔案）</option>
+                        <option value="msds">MSDS文檔轉換（材料安全數據表）</option>
+                        <option value="contract">合約文檔轉換</option>
+                        <option value="invoice">發票文檔轉換</option>
+                        <option value="report">報告文檔轉換</option>
+                        <option value="certificate">證書文檔轉換</option>
+                        <option value="manual">手冊文檔轉換</option>
+                        <option value="specification">規格文檔轉換</option>
+                        <option value="policy">政策文檔轉換</option>
+                        <option value="medical">醫療文檔轉換</option>
+                        <option value="financial">財務文檔轉換</option>
+                        <option value="legal">法律文檔轉換</option>
+                        <option value="technical">技術文檔轉換</option>
+                        <option value="marketing">行銷文檔轉換</option>
+                        <option value="custom">自定義</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editBrandInput">
+                        <i class="fas fa-building"></i>
+                        品牌/公司（可選）
+                    </label>
+                    <input type="text" id="editBrandInput" placeholder="例如：3M、Apple、Microsoft">
+                    <small class="help-text">品牌資訊，用於識別和分類</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-cog"></i>
+                        預設配置
+                    </label>
+                    <div class="edit-field-container">
+                        <div class="current-value-display">
+                            <span id="currentProfileValue">載入中...</span>
+                        </div>
+                        <div class="version-controls">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="showProfileVersions()">
+                                <i class="fas fa-history"></i> 切換版本
+                            </button>
+                        </div>
+                        <div class="action-buttons">
+                            <button type="button" class="btn btn-info btn-sm" onclick="viewProfileDetails()">
+                                <i class="fas fa-eye"></i> 查看詳情
+                            </button>
+                            <button type="button" class="btn btn-warning btn-sm developing" onclick="editCurrentProfile()">
+                                <i class="fas fa-edit"></i> 編輯當前
+                            </button>
+                            <button type="button" class="btn btn-success btn-sm developing" onclick="createNewProfile()">
+                                <i class="fas fa-plus"></i> 新建版本
+                            </button>
+                        </div>
+                    </div>
+                    <small class="help-text">為這個工作設定專用的提取配置，支援版本管理和回滾</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-file-alt"></i>
+                        預設模板
+                    </label>
+                    <div class="edit-field-container">
+                        <div class="current-value-display">
+                            <span id="currentTemplateValue">載入中...</span>
+                        </div>
+                        <div class="version-controls">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="showTemplateVersions()">
+                                <i class="fas fa-history"></i> 切換版本
+                            </button>
+                        </div>
+                        <div class="action-buttons">
+                            <button type="button" class="btn btn-info btn-sm" onclick="viewTemplateDetails()">
+                                <i class="fas fa-eye"></i> 查看詳情
+                            </button>
+                            <button type="button" class="btn btn-warning btn-sm developing" onclick="editCurrentTemplate()">
+                                <i class="fas fa-edit"></i> 編輯當前
+                            </button>
+                            <button type="button" class="btn btn-success btn-sm developing" onclick="uploadNewTemplate()">
+                                <i class="fas fa-upload"></i> 上傳新版本
+                            </button>
+                        </div>
+                    </div>
+                    <small class="help-text">為這個工作設定專用的輸出模板，支援版本管理和回滾</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-comment-dots"></i>
+                        預設提示詞
+                    </label>
+                    <div class="edit-field-container">
+                        <div class="current-value-display">
+                            <span id="currentPromptValue">載入中...</span>
+                        </div>
+                        <div class="version-controls">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="showPromptVersions()">
+                                <i class="fas fa-history"></i> 切換版本
+                            </button>
+                        </div>
+                        <div class="action-buttons">
+                            <button type="button" class="btn btn-info btn-sm" onclick="viewPromptDetails()">
+                                <i class="fas fa-eye"></i> 查看詳情
+                            </button>
+                            <button type="button" class="btn btn-warning btn-sm developing" onclick="editCurrentPrompt()">
+                                <i class="fas fa-edit"></i> 編輯當前
+                            </button>
+                            <button type="button" class="btn btn-success btn-sm developing" onclick="createNewPrompt()">
+                                <i class="fas fa-plus"></i> 新建版本
+                            </button>
+                        </div>
+                    </div>
+                    <small class="help-text">為這個工作設定專用的AI提取提示詞，支援版本管理和回滾</small>
+                </div>
+                
+                <!-- 版本管理區域 -->
+                <div class="form-group version-management" style="display: none;">
+                    <label>
+                        <i class="fas fa-history"></i>
+                        版本歷史
+                    </label>
+                    <div class="version-list" id="versionList">
+                        <!-- 版本列表將在這裡動態生成 -->
+                    </div>
+                    <small class="help-text">可以回滾到之前的版本，每個工作流程的版本歷史完全獨立</small>
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="updateWork()">更新工作</button>
+                <button class="btn btn-secondary" onclick="closeEditWorkModal()">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 提示詞編輯模態框 -->
+    <div class="modal" id="promptModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="promptModalTitle">編輯提示詞</h3>
+                <button class="close-btn" onclick="closePromptModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="promptNameInput">
+                        <i class="fas fa-tag"></i>
+                        提示詞名稱
+                    </label>
+                    <input type="text" id="promptNameInput" placeholder="例如：PIF文檔提取提示詞" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="promptDescriptionInput">
+                        <i class="fas fa-align-left"></i>
+                        描述
+                    </label>
+                    <textarea id="promptDescriptionInput" placeholder="描述這個提示詞的用途..." rows="2"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="promptContentInput">
+                        <i class="fas fa-comment-dots"></i>
+                        提示詞內容
+                    </label>
+                    <textarea id="promptContentInput" placeholder="請輸入AI提取提示詞內容..." rows="10" required></textarea>
+                    <small class="help-text">使用 {field_name} 來表示需要提取的欄位</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="promptFieldsInput">
+                        <i class="fas fa-list"></i>
+                        提取欄位（可選）
+                    </label>
+                    <input type="text" id="promptFieldsInput" placeholder="欄位名稱，用逗號分隔，例如：product_name,manufacturer,ingredients">
+                    <small class="help-text">定義這個提示詞會提取哪些欄位</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="savePrompt()">保存提示詞</button>
+                <button class="btn btn-secondary" onclick="closePromptModal()">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 學習模態框 - 暫時停用
+    <div class="modal" id="learnModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>學習修正</h3>
+                <button class="close-btn" onclick="closeLearnModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="learn-tabs">
+                    <button class="tab-btn active" onclick="switchLearnTab('json')">JSON資料學習</button>
+                    <button class="tab-btn" onclick="switchLearnTab('word')">Word文檔學習</button>
+                </div>
+                
+                <div id="jsonLearnMode" class="learn-mode">
+                    <p>請貼上修正後的JSON資料進行學習：</p>
+                    <textarea id="correctedData" placeholder="請貼上修正後的JSON資料..."></textarea>
+                </div>
+                
+                <div id="wordLearnMode" class="learn-mode" style="display: none;">
+                    <p>請上傳修正後的Word文檔進行學習：</p>
+                    <div class="file-upload-area" id="wordUploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-file-word"></i>
+                        </div>
+                        <p>拖拽Word文檔到這裡或點擊選擇</p>
+                        <input type="file" id="wordFileInput" accept=".docx" style="display: none;">
+                        <button class="upload-btn" onclick="document.getElementById('wordFileInput').click()">
+                            選擇Word文檔
+                        </button>
+                    </div>
+                    <div id="wordFileInfo" class="file-info" style="display: none;">
+                        <i class="fas fa-file-word"></i>
+                        <span id="wordFileName"></span>
+                        <button class="remove-file" onclick="removeWordFile()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="submitLearning()">提交學習</button>
+                <button class="btn btn-secondary" onclick="closeLearnModal()">取消</button>
+            </div>
+        </div>
+    </div>
+    -->
+
+    <!-- 單個檔案頁面選擇模態框 -->
+    <div class="modal" id="pageSelectionModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-list-check"></i> <span data-i18n="pageSelection.title">選擇處理頁面</span></h3>
+                <button class="close-btn" onclick="closePageSelectionModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="page-selection-info">
+                    <p id="pageSelectionInfo" data-i18n="pageSelection.info">請選擇要處理的頁面。未選擇頁面的檔案將處理所有頁面。</p>
+                    <div class="selection-summary" id="selectionSummary">
+                        <span><span data-i18n="pageSelection.selectedCount">已選擇</span> <span id="selectedPagesCount">0</span> <span data-i18n="pageSelection.pagesUnit">頁</span></span>
+                    </div>
+                </div>
+                
+                <div class="file-info" id="currentFileInfo">
+                    <div class="file-name-display">
+                        <i class="fas fa-file-pdf"></i>
+                        <span id="currentFileName" data-i18n="pageSelection.fileName">檔案名稱</span>
+                    </div>
+                </div>
+                
+                <!-- 頁面選擇區域 -->
+                <div class="page-selection-area">
+                    <div class="selection-header">
+                        <h4><i class="fas fa-keyboard"></i> <span data-i18n="pageSelection.selectPages">選擇頁面</span></h4>
+                        <p class="selection-description" data-i18n="pageSelection.description">請輸入要處理的頁碼（檔案內的順序，不是人工編頁碼）</p>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="pageNumbersInput" data-i18n="pageSelection.pageRangeLabel">頁碼範圍（用逗號分隔，如：1,3,5-8,10）：</label>
+                        <input type="text" id="pageNumbersInput" placeholder="" class="form-control" data-i18n-placeholder="pageSelection.pageRangePlaceholder">
+                        <div class="input-help">
+                            <small data-i18n="pageSelection.supportedFormats">支援格式：單個頁碼（1,3,5）、範圍（5-8）、混合（1,3,5-8,10）</small>
+                        </div>
+                        <div class="input-buttons">
+                            <button class="btn btn-primary" onclick="prodocux.applyPageSelection()">
+                                <i class="fas fa-check"></i> <span data-i18n="pageSelection.confirmSelection">確認選擇</span>
+                            </button>
+                            <button class="btn btn-secondary" onclick="prodocux.clearPageSelection()">
+                                <i class="fas fa-times"></i> <span data-i18n="pageSelection.clearSelection">清空選擇</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 選擇摘要 -->
+                    <div class="selection-summary" id="selectionSummary" style="display: none;">
+                        <div class="summary-content">
+                            <i class="fas fa-info-circle"></i>
+                            <span data-i18n="pageSelection.selectedPagesCount">已選擇 <strong id="selectedPagesCount">0</strong> 個頁面</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="confirmPageSelection()">
+                    <i class="fas fa-check"></i>
+                    <span data-i18n="pageSelection.confirmSelection">確認選擇</span>
+                </button>
+                <button class="btn btn-secondary" onclick="closePageSelectionModal()" data-i18n="buttons.cancel">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-info">
+                <div class="footer-links">
+                    <a href="https://github.com/wucy1/ProDocuX" target="_blank" class="footer-link">
+                        <i class="fab fa-github"></i> GitHub
+                    </a>
+                    <a href="/settings" class="footer-link">
+                        <i class="fas fa-cog"></i> <span data-i18n="footer.settings">設定</span>
+                    </a>
+                    <span class="footer-license">MIT License</span>
+                    <span class="footer-version">RC1</span>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                <p>&copy; 2025 ProDocuX</p>
+                <p><span data-i18n="app.tagline">AI文檔智能轉換平台</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

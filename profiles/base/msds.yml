@@ -1,0 +1,93 @@
+name: msds
+description: MSDS文檔通用提取Profile
+version: 1.0.0
+profile_type: base
+use_page_extraction: true
+max_pages: 15
+
+extraction_rules:
+  product_info:
+    patterns:
+      - "產品名稱[:：]\\s*(.+)"
+      - "Product Name[:：]\\s*(.+)"
+      - "化學名稱[:：]\\s*(.+)"
+      - "Chemical Name[:：]\\s*(.+)"
+      - "CAS號碼[:：]\\s*(.+)"
+      - "CAS Number[:：]\\s*(.+)"
+      - "分子式[:：]\\s*(.+)"
+      - "Molecular Formula[:：]\\s*(.+)"
+  
+  manufacturer_info:
+    patterns:
+      - "製造商[:：]\\s*(.+)"
+      - "Manufacturer[:：]\\s*(.+)"
+      - "供應商[:：]\\s*(.+)"
+      - "Supplier[:：]\\s*(.+)"
+      - "緊急聯絡電話[:：]\\s*(.+)"
+      - "Emergency Phone[:：]\\s*(.+)"
+  
+  hazard_info:
+    patterns:
+      - "危險性分類[:：]\\s*(.+)"
+      - "Hazard Classification[:：]\\s*(.+)"
+      - "危險標示[:：]\\s*(.+)"
+      - "Hazard Symbols[:：]\\s*(.+)"
+      - "危險說明[:：]\\s*(.+)"
+      - "Hazard Statements[:：]\\s*(.+)"
+      - "防範說明[:：]\\s*(.+)"
+      - "Precautionary Statements[:：]\\s*(.+)"
+  
+  physical_properties:
+    patterns:
+      - "外觀[:：]\\s*(.+)"
+      - "Appearance[:：]\\s*(.+)"
+      - "氣味[:：]\\s*(.+)"
+      - "Odor[:：]\\s*(.+)"
+      - "熔點[:：]\\s*(.+)"
+      - "Melting Point[:：]\\s*(.+)"
+      - "沸點[:：]\\s*(.+)"
+      - "Boiling Point[:：]\\s*(.+)"
+      - "密度[:：]\\s*(.+)"
+      - "Density[:：]\\s*(.+)"
+  
+  safety_measures:
+    patterns:
+      - "個人防護[:：]\\s*(.+)"
+      - "Personal Protection[:：]\\s*(.+)"
+      - "儲存條件[:：]\\s*(.+)"
+      - "Storage Conditions[:：]\\s*(.+)"
+      - "洩漏處理[:：]\\s*(.+)"
+      - "Spill Response[:：]\\s*(.+)"
+      - "滅火方法[:：]\\s*(.+)"
+      - "Fire Fighting[:：]\\s*(.+)"
+
+post_process:
+  clean_text: true
+  normalize_format: true
+  validate_data: true
+  extract_tables: true
+  extract_lists: true
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
